@@ -25,3 +25,5 @@ Real LM Studio evidence is separate from fixture transport measurements:
 
 * [Prefix matrix plan](../tests/plans/prefix-matrix-20261111.md) and [12-request prefix result](../tests/reports/prefix/20261111_214520.md): same-session repetition, suffix variation, new-session reuse on an explicitly selected backend, cross-backend cold input, and early-prefix mutation. Includes compact per-request JSON; visible answers and cache usage are separate criteria.
 * [Real concurrency result](../tests/reports/concurrency/20261111_195247.md): 8/16/32 sessions, upstream LM Link errors, client deadline limits, control-plane responsiveness and permit recovery. A balanced proxy admission count is not a successful two-engine inference result or a measurement of upstream running slots.
+
+Real Claude Code agent-affinity workload: [executed report](../tests/reports/claude-agent-affinity/20261112_022605.md). The coding task is the load generator; app completion is not implied by routing acceptance.

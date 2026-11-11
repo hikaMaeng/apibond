@@ -1,0 +1,134 @@
+{
+  "date": "2026-11-12",
+  "timezone": "Asia/Seoul",
+  "runtimeVersion": "0.1.1",
+  "runtimeSourceCommit": "19ce4fab2214da16a5a2847fc10f28e1391cdf4e",
+  "task": "YouTube search, transcript download, original and summary webapp in youtubescript using multiple agents",
+  "actualClient": "installed clauding + Claude Code 2.1.306",
+  "requests": 48,
+  "completed": 43,
+  "operatorCancelledAfterAcceptance": 5,
+  "unexpectedHttpOrTransportErrors": 0,
+  "affinityViolations": 0,
+  "backendStats": {
+    "qwen-28": {
+      "requests": 21,
+      "completed": 19,
+      "cancelled": 2
+    },
+    "qwen-tuf": {
+      "requests": 27,
+      "completed": 24,
+      "cancelled": 3
+    }
+  },
+  "logicalHistories": 6,
+  "childAgents": 5,
+  "maxObservedSimultaneousRequests": 5,
+  "bothBackendsActiveSamples": 633,
+  "samplingIntervalMs": 2000,
+  "identities": [
+    {
+      "identity": "main",
+      "backend": [
+        "qwen-28"
+      ],
+      "requests": 11,
+      "completed": 10,
+      "cancelled": 1,
+      "cacheReadTokens": 168564,
+      "followupCacheReadRatio": 0.8738813872718194
+    },
+    {
+      "identity": "agent-1",
+      "backend": [
+        "qwen-tuf"
+      ],
+      "requests": 18,
+      "completed": 17,
+      "cancelled": 1,
+      "cacheReadTokens": 391560,
+      "followupCacheReadRatio": 0.973164713140037
+    },
+    {
+      "identity": "agent-2",
+      "backend": [
+        "qwen-28"
+      ],
+      "requests": 4,
+      "completed": 4,
+      "cancelled": 0,
+      "cacheReadTokens": 47887,
+      "followupCacheReadRatio": 0.9227493448435332
+    },
+    {
+      "identity": "agent-3",
+      "backend": [
+        "qwen-tuf"
+      ],
+      "requests": 3,
+      "completed": 2,
+      "cancelled": 1,
+      "cacheReadTokens": 14859,
+      "followupCacheReadRatio": 0.8371739252915658
+    },
+    {
+      "identity": "agent-4",
+      "backend": [
+        "qwen-28"
+      ],
+      "requests": 6,
+      "completed": 5,
+      "cancelled": 1,
+      "cacheReadTokens": 43370,
+      "followupCacheReadRatio": 0.8742717761606225
+    },
+    {
+      "identity": "agent-5",
+      "backend": [
+        "qwen-tuf"
+      ],
+      "requests": 6,
+      "completed": 5,
+      "cancelled": 1,
+      "cacheReadTokens": 41741,
+      "followupCacheReadRatio": 0.9769461217993728
+    }
+  ],
+  "statusResponsiveness": {
+    "samples": 30,
+    "p50Ms": 16.61609999999996,
+    "p95Ms": 17.477800000000002,
+    "maxMs": 41.64189999999999
+  },
+  "capacityRecovery": {
+    "allActiveZero": true,
+    "bufferBytesReserved": 0,
+    "retainedSessionEntries": 8
+  },
+  "trialExit": "operator-stopped-after-routing-acceptance",
+  "appCompletionAccepted": false,
+  "trialConfiguration": {
+    "port": 18181,
+    "perBackendCapacity": 4
+  },
+  "productionConfiguration": {
+    "listen": "0.0.0.0:18180",
+    "perBackendCapacity": 10,
+    "totalCapacity": 20,
+    "model": "qwen36-35b"
+  },
+  "notes": [
+    "All 48 requests received upstream HTTP 200; five live streams were intentionally cancelled during experiment cleanup, not counted as completed responses.",
+    "The task created real files and ran real tools; generated app completeness and generated code correctness were not accepted.",
+    "CLI nested-fork restrictions and missing-file tool errors are separate from HTTP relay failures.",
+    "Very short nonstreaming token-budget probes produced no visible answer; direct-upstream parity was verified at 128 tokens. No conversation-success claim is made from those probes."
+  ],
+  "lmStudioLogCorrelation": {
+    "matchedRequests": 48,
+    "upstreamModels": {
+      "qwen36-35b:28": 21,
+      "qwen36-35b:tuf": 27
+    }
+  }
+}

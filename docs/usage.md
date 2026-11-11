@@ -3,7 +3,7 @@
 Node >=20 is needed by the npm wrapper. Prebuilt targets: Windows x64, Linux x64/arm64 (glibc >=2.39), macOS x64/arm64 (runner deployment target). Verify the release's actual assets for a version.
 
 ```sh
-npm install -g https://github.com/hikaMaeng/apibond/releases/download/v0.1.0/apibond-0.1.0.tgz
+npm install -g https://github.com/hikaMaeng/apibond/releases/download/v0.1.1/apibond-0.1.1.tgz
 apibond --init
 apibond --config apibond.json --check
 apibond --config apibond.json
@@ -59,7 +59,7 @@ Use each backend's actual context limit. Start a new `clauding` process after ch
 
 ## LAN deployment with same-host LM Studio
 
-The source repository also includes ready-to-run Windows x64 and macOS arm64/x64 binaries in [deploy/v0.1.0](https://github.com/hikaMaeng/apibond/tree/main/deploy/v0.1.0), with a version manifest and SHA-256 verification. They require neither Node nor Cargo to run. Each binary release has its own `deploy/v<version>/` directory; local runtime configuration stays separate from these versioned artifacts. These repository artifacts are separate from the npm wrapper's download/install path.
+The source repository also includes ready-to-run Windows x64 and macOS arm64/x64 binaries in [deploy/v0.1.1](https://github.com/hikaMaeng/apibond/tree/main/deploy/v0.1.1), with a version manifest and SHA-256 verification. They require neither Node nor Cargo to run. Each binary release has its own `deploy/v<version>/` directory; local runtime configuration stays separate from these versioned artifacts. These repository artifacts are separate from the npm wrapper's download/install path.
 
 [examples/lmstudio-lan.json](../examples/lmstudio-lan.json) exposes `qwen36-35b` over all local IPv4 interfaces on port 18180, backed by LM Studio instances `qwen36-35b:28` and `qwen36-35b:tuf` on the same host:
 
@@ -78,4 +78,4 @@ Optional backend health_path is origin-relative, e.g. `/health`; until its first
 
 `runtime.worker_threads` controls native Tokio workers. null defaults to min(logical cores, 8), avoiding unnecessary workers on large hosts; choose 1..512 explicitly for your load. Requests >=1 MiB are inspected on the bounded-admission blocking pool so large multimodal JSON does not monopolize streaming workers.
 
-Source build: `cargo build --release --locked`, then run target/release/apibond[.exe]. An npm Git URL is also supported: `npm install -g github:hikaMaeng/apibond#v0.1.0`. Release tgz embeds binary hashes; Git installs retrieve hashes from the same hosted release. Hash checks detect corruption, not an independently signed release identity. If scripts are disabled, first CLI use performs the same install; a read-only global prefix falls back to the user's cache.
+Source build: `cargo build --release --locked`, then run target/release/apibond[.exe]. An npm Git URL is also supported: `npm install -g github:hikaMaeng/apibond#v0.1.1`. Release tgz embeds binary hashes; Git installs retrieve hashes from the same hosted release. Hash checks detect corruption, not an independently signed release identity. If scripts are disabled, first CLI use performs the same install; a read-only global prefix falls back to the user's cache.

@@ -32,9 +32,9 @@ jobs:
       matrix:
         include:
           - os: macos-15
-            binary: deploy/v0.1.0/darwin-arm64/apibond
+            binary: deploy/v0.1.1/darwin-arm64/apibond
           - os: macos-15-intel
-            binary: deploy/v0.1.0/darwin-x64/apibond
+            binary: deploy/v0.1.1/darwin-x64/apibond
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

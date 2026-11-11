@@ -13,7 +13,7 @@ APIBond는 동일 모델의 여러 API 서버를 세션별로 묶는 Rust 스트
 | 사전 검토 계획 | [Development plan](docs/development-plan.md) |
 
 ```sh
-npm install -g https://github.com/hikaMaeng/apibond/releases/download/v0.1.0/apibond-0.1.0.tgz
+npm install -g https://github.com/hikaMaeng/apibond/releases/download/v0.1.1/apibond-0.1.1.tgz
 apibond --init
 # Edit apibond.json: configure your endpoints, model names and credentials.
 apibond --check

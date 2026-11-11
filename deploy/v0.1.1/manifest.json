@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.1",
+  "runtimeSourceCommit": "19ce4fab2214da16a5a2847fc10f28e1391cdf4e",
+  "profileSourceCommit": "19ce4fab2214da16a5a2847fc10f28e1391cdf4e",
+  "exampleConfig": "apibond.example.json",
+  "artifacts": [
+    {
+      "platform": "win32-x64",
+      "path": "win32-x64/apibond.exe",
+      "bytes": 7634432,
+      "sha256": "78f0b408273e10b37c0e86d6a07b83e98616e764f8c25f187e721d18730a36c9",
+      "source": "Local Windows release build from runtimeSourceCommit",
+      "msvcRuntime": "static"
+    },
+    {
+      "platform": "darwin-arm64",
+      "path": "darwin-arm64/apibond",
+      "bytes": 6651040,
+      "sha256": "addf2862d75067f3d424afef6d59348b4591ccad7c87b129b7162829b1f70c47",
+      "source": "https://github.com/hikaMaeng/apibond/releases/download/v0.1.1/apibond-darwin-arm64",
+      "build": {
+        "nativeCiRun": "https://github.com/hikaMaeng/apibond/actions/runs/43065560395",
+        "rustc": "1.96.0",
+        "minimumMacos": "11.0.0",
+        "sdk": "15.5.0"
+      }
+    },
+    {
+      "platform": "darwin-x64",
+      "path": "darwin-x64/apibond",
+      "bytes": 7824516,
+      "sha256": "c39e71528472dbb6a51001dd964deb563e6395ff29c59a3c37ea45fc454c9e51",
+      "source": "https://github.com/hikaMaeng/apibond/releases/download/v0.1.1/apibond-darwin-x64",
+      "build": {
+        "nativeCiRun": "https://github.com/hikaMaeng/apibond/actions/runs/43065560395",
+        "rustc": "1.96.0",
+        "minimumMacos": "10.12.0",
+        "sdk": "15.5.0"
+      }
+    }
+  ]
+}

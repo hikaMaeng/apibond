@@ -15,25 +15,30 @@ deploy/
 
 | 버전 | 플랫폼 | 실행 파일 |
 |---|---|---|
+| 0.1.1 | Windows x64 | [apibond.exe](v0.1.1/win32-x64/apibond.exe) |
+| 0.1.1 | macOS Apple Silicon | [apibond](v0.1.1/darwin-arm64/apibond) |
+| 0.1.1 | macOS Intel | [apibond](v0.1.1/darwin-x64/apibond) |
 | 0.1.0 | Windows x64 | [apibond.exe](v0.1.0/win32-x64/apibond.exe) |
 | 0.1.0 | macOS Apple Silicon | [apibond](v0.1.0/darwin-arm64/apibond) |
 | 0.1.0 | macOS Intel | [apibond](v0.1.0/darwin-x64/apibond) |
 
-Windows 바이너리는 공개 GitHub Release의 v0.1.0 파일과 동일하며 MSVC CRT 정적 링크 빌드입니다. Mac 바이너리는 같은 런타임 소스 커밋을 로컬 Mac에서 Rust 1.97.1로 빌드했습니다. Apple Silicon용 네이티브 빌드와 Intel용 크로스 빌드를 제공하며 macOS deployment target은 11.0입니다. 의존 동적 라이브러리는 macOS 시스템 라이브러리뿐입니다. Developer ID 서명·공증 배포는 아닙니다. 원본·빌드 환경·소스 커밋·설정 예제 출처·바이너리 크기와 SHA-256은 [manifest.json](v0.1.0/manifest.json)에 기록합니다. 실행에는 Node·Cargo가 필요하지 않습니다.
+0.1.1은 Claude Code의 부모 세션과 에이전트 ID를 함께 사용해 독립 작업을 분배합니다. Windows는 로컬 MSVC CRT 정적 링크 빌드이며, Mac 두 아키텍처는 동일 소스의 네이티브 GitHub Release 빌드입니다. [0.1.1 manifest](v0.1.1/manifest.json)에 각 파일의 출처·소스 커밋·크기·SHA-256을 기록합니다. Mac Mach-O에 기록된 최소 OS는 ARM 11.0, Intel 10.12이며 구형 OS 전체의 실행 보장을 뜻하지 않습니다. Developer ID 서명·공증 배포는 아닙니다.
+
+0.1.0 Windows 바이너리는 공개 GitHub Release 파일과 동일합니다. 0.1.0 Mac 바이너리는 로컬 Mac에서 Rust 1.97.1로 ARM 네이티브·Intel 크로스 빌드했고 deployment target은 11.0입니다. 기존 파일은 보존합니다. 실행에는 Node·Cargo가 필요하지 않습니다.
 
 저장소 루트에서 검증하고 실행합니다. 두 번째 명령은 기존 운영 설정 `apibond.json`을 사용합니다. 신규 환경에서는 동봉 예제를 별도 운영 설정으로 복사한 뒤 모델 이름을 맞춥니다.
 
 ```powershell
-.\deploy\v0.1.0\win32-x64\apibond.exe --config .\deploy\v0.1.0\apibond.example.json --check
-.\deploy\v0.1.0\win32-x64\apibond.exe --config .\apibond.json
+.\deploy\v0.1.1\win32-x64\apibond.exe --config .\deploy\v0.1.1\apibond.example.json --check
+.\deploy\v0.1.1\win32-x64\apibond.exe --config .\apibond.json
 ```
 
 Mac에서는 아키텍처에 맞는 경로를 사용합니다. Git 체크아웃에는 실행 권한이 포함됩니다.
 
 ```sh
-./deploy/v0.1.0/darwin-arm64/apibond --config ./apibond.json
+./deploy/v0.1.1/darwin-arm64/apibond --config ./apibond.json
 # Intel Mac:
-./deploy/v0.1.0/darwin-x64/apibond --config ./apibond.json
+./deploy/v0.1.1/darwin-x64/apibond --config ./apibond.json
 ```
 
 macOS 로컬 검수에서 기본 열린 파일 한도는 256이었습니다. 대량 연결을 검수할 때는 해당 실행 셸에서 `ulimit -n 4096`으로 높였습니다. 시스템의 영구 설정이나 다른 서비스는 변경하지 않았습니다. macOS 11.0은 빌드 타깃 값이며, 모든 구형 OS 조합의 실기기 검증을 뜻하지 않습니다.

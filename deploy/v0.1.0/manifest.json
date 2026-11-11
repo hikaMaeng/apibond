@@ -12,6 +12,38 @@
       "sha256": "40c9cb8832428088ccba748c6ce106116a58dbf99d5507201935661979554395",
       "source": "https://github.com/hikaMaeng/apibond/releases/download/v0.1.0/apibond-win32-x64.exe",
       "msvcRuntime": "static"
+    },
+    {
+      "platform": "darwin-arm64",
+      "path": "darwin-arm64/apibond",
+      "bytes": 6646208,
+      "sha256": "327c8d72a6235d6c4336f422d87b5ae9031703fc4901046b3cffa6aecaf9d105",
+      "source": "Local macOS build from runtimeSourceCommit",
+      "build": {
+        "target": "aarch64-apple-darwin",
+        "rustc": "1.97.1 (8bab26f4f 2026-07-14)",
+        "cargo": "1.97.1 (c980f4866 2026-06-30)",
+        "sdk": "27.0",
+        "macosDeploymentTarget": "11.0",
+        "hostArchitecture": "arm64",
+        "sourceArchiveSha256": "01bce40eba3a1e22b19d0aa9640d088f6df99d959fcec2c62a83d2b9053a81be"
+      }
+    },
+    {
+      "platform": "darwin-x64",
+      "path": "darwin-x64/apibond",
+      "bytes": 7832340,
+      "sha256": "56d093b3f6d1362bcb96335a8dca2c191ad45890ac9aab032144cce54cb5f0d2",
+      "source": "Local macOS build from runtimeSourceCommit",
+      "build": {
+        "target": "x86_64-apple-darwin",
+        "rustc": "1.97.1 (8bab26f4f 2026-07-14)",
+        "cargo": "1.97.1 (c980f4866 2026-06-30)",
+        "sdk": "27.0",
+        "macosDeploymentTarget": "11.0",
+        "hostArchitecture": "arm64",
+        "sourceArchiveSha256": "01bce40eba3a1e22b19d0aa9640d088f6df99d959fcec2c62a83d2b9053a81be"
+      }
     }
   ]
 }

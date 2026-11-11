@@ -45,9 +45,21 @@ apibond --config apibond.json
 
 OpenAI clients use base URL `http://127.0.0.1:18180/v1`, Anthropic clients `http://127.0.0.1:18180`. Set model to the public alias and retain a stable session header across turns.
 
+For Claude Code through `clauding`, use the Anthropic origin without `/v1`; the SDK appends `/v1/messages` itself. For the same-host LM Studio profile with a 153,600-token window:
+
+```json
+{
+  "baseUrl": "http://127.0.0.1:18180",
+  "model": "qwen36-35b",
+  "contextTokens": 153600
+}
+```
+
+Use each backend's actual context limit. Start a new `clauding` process after changing its config. A custom-model recognition warning does not establish request failure; validate an actual reply and session continuation. [Executed conversation check](../tests/reports/interoperability/20261112_clauding.md).
+
 ## LAN deployment with same-host LM Studio
 
-The source repository also includes a ready-to-run Windows x64 binary in [deploy/v0.1.0](https://github.com/hikaMaeng/apibond/tree/main/deploy/v0.1.0), with a version manifest and SHA-256 verification. It requires neither Node nor Cargo to run. Each binary release has its own `deploy/v<version>/` directory; local runtime configuration stays separate from these versioned artifacts. These repository artifacts are separate from the npm wrapper's download/install path.
+The source repository also includes ready-to-run Windows x64 and macOS arm64/x64 binaries in [deploy/v0.1.0](https://github.com/hikaMaeng/apibond/tree/main/deploy/v0.1.0), with a version manifest and SHA-256 verification. They require neither Node nor Cargo to run. Each binary release has its own `deploy/v<version>/` directory; local runtime configuration stays separate from these versioned artifacts. These repository artifacts are separate from the npm wrapper's download/install path.
 
 [examples/lmstudio-lan.json](../examples/lmstudio-lan.json) exposes `qwen36-35b` over all local IPv4 interfaces on port 18180, backed by LM Studio instances `qwen36-35b:28` and `qwen36-35b:tuf` on the same host:
 

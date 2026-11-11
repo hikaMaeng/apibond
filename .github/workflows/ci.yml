@@ -26,3 +26,19 @@ jobs:
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: cargo test --locked
       - run: node --test scripts/install.test.mjs
+  mac-deployment:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            binary: deploy/v0.1.0/darwin-arm64/apibond
+          - os: macos-15-intel
+            binary: deploy/v0.1.0/darwin-x64/apibond
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/smoke-deployment.mjs '${{ matrix.binary }}'

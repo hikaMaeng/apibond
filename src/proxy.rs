@@ -13,6 +13,7 @@ use axum::{
 use bytes::BytesMut;
 use futures_util::StreamExt;
 use serde_json::json;
+use sha2::{Digest, Sha256};
 use std::{
     io,
     sync::{
@@ -119,17 +120,24 @@ fn header(headers: &HeaderMap, name: &str) -> Result<Option<String>, RouteError>
     Ok(Some(value.to_string()))
 }
 fn session(headers: &HeaderMap) -> Result<Option<String>, RouteError> {
-    for name in [
-        "x-apibond-session-id",
-        "x-session-id",
-        "x-claude-code-session-id",
-        "x-codex-session-id",
-    ] {
+    for name in ["x-apibond-session-id", "x-session-id"] {
         if let Some(v) = header(headers, name)? {
             return Ok(Some(v));
         }
     }
-    Ok(None)
+    if let Some(root) = header(headers, "x-claude-code-session-id")? {
+        // Claude Code shares the root session across independent agent histories.
+        // Scope each agent's affinity to that root, never to its parent agent.
+        if let Some(agent) = header(headers, "x-claude-code-agent-id")? {
+            let key = serde_json::to_vec(&(root, agent)).expect("strings serialize");
+            return Ok(Some(format!(
+                "claude-agent:{:x}",
+                Bytes::copy_from_slice(&Sha256::digest(key))
+            )));
+        }
+        return Ok(Some(root));
+    }
+    header(headers, "x-codex-session-id")
 }
 fn json_type(headers: &HeaderMap) -> bool {
     headers
@@ -504,6 +512,17 @@ async fn dispatch(app: Arc<App>, request: Request) -> Result<Response, RouteErro
         owners,
         needs_pin: unknown || meta.untracked_state,
     })?;
+    if tracing::enabled!(tracing::Level::DEBUG) {
+        let session_tag = session_id.as_ref().map(|id| {
+            format!(
+                "{:x}",
+                Bytes::copy_from_slice(&Sha256::digest(id.as_bytes()))
+            )
+        });
+        tracing::debug!(backend=%selected.backend.id, ?session_tag,
+            claude_agent=parts.headers.contains_key("x-claude-code-agent-id"),
+            "request routed");
+    }
     let backend_index = app
         .backends
         .iter()

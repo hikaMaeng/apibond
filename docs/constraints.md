@@ -4,6 +4,8 @@
 
 Sessions are scoped to inbound credential and public model pool. Native handle lookup is scoped to credential/provider/ID; its owner must belong to the selected model pool. When inbound auth is explicitly none, callers share one scope. IDs colliding across backends are treated as unknown and require a pin.
 
+Claude Code child histories use `(root session ID, agent ID)` as their affinity identity when both native headers are present. Independent agents can therefore occupy different servers while each agent's continuations retain locality. One history remains pinned even when its owner is full; available capacity on another server does not migrate that history. Clients omitting per-agent identity cannot obtain this separation automatically.
+
 1. Known state owner wins; conflicting session/explicit backend is 409.
 2. Otherwise use an explicit backend belonging to the model/API pool.
 3. Otherwise use an existing compatible session pin.

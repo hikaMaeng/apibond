@@ -15,14 +15,14 @@
     "qwen-28": {
       "base_url": "http://127.0.0.1:12345/v1",
       "apis": ["openai", "anthropic", "responses"],
-      "capacity": 4,
+      "capacity": 10,
       "cooldown_ms": 3000,
       "auth": { "scheme": "none" }
     },
     "qwen-tuf": {
       "base_url": "http://127.0.0.1:12345/v1",
       "apis": ["openai", "anthropic", "responses"],
-      "capacity": 4,
+      "capacity": 10,
       "cooldown_ms": 3000,
       "auth": { "scheme": "none" }
     }

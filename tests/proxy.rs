@@ -305,6 +305,111 @@ async fn concurrent_first_session_is_atomic_and_new_sessions_balance() {
 }
 
 #[tokio::test]
+async fn claude_agents_balance_and_keep_their_own_affinity() {
+    let f = Fixture::new().await;
+    let mut owners = Vec::new();
+    // Real Claude Code header shape: one root session, distinct agent histories.
+    for root in ["root-one", "root-two"] {
+        for agent in ["main", "worker-a", "worker-b", "worker-c"] {
+            let mut owner = None;
+            for _ in 0..2 {
+                let response = f
+                    .post("/v1/messages", json!({"model":"bonded-model"}))
+                    .header("x-claude-code-session-id", root)
+                    .header("x-claude-code-agent-id", agent)
+                    .header("x-claude-code-parent-agent-id", "main")
+                    .send()
+                    .await
+                    .unwrap();
+                assert_eq!(response.status(), 200);
+                let backend = response.headers()["x-apibond-backend"]
+                    .to_str()
+                    .unwrap()
+                    .to_owned();
+                assert!(owner.as_ref().is_none_or(|o| o == &backend));
+                owner = Some(backend);
+                response.bytes().await.unwrap();
+            }
+            owners.push(owner.unwrap());
+        }
+    }
+    assert_eq!(owners.iter().filter(|o| *o == "server-a").count(), 4);
+    assert_eq!(owners.iter().filter(|o| *o == "server-b").count(), 4);
+    assert_eq!(f.app.status()["models"]["bonded-model"], 8);
+    // An explicit APIBond session remains authoritative, even across agents.
+    let mut owner = None;
+    for agent in ["main", "worker-a"] {
+        let response = f
+            .post("/v1/messages", json!({"model":"bonded-model"}))
+            .header("x-apibond-session-id", "explicit")
+            .header("x-claude-code-session-id", "root-one")
+            .header("x-claude-code-agent-id", agent)
+            .send()
+            .await
+            .unwrap();
+        let backend = response.headers()["x-apibond-backend"]
+            .to_str()
+            .unwrap()
+            .to_owned();
+        assert!(owner.as_ref().is_none_or(|o| o == &backend));
+        owner = Some(backend);
+        response.bytes().await.unwrap();
+    }
+    f.wait_idle().await;
+}
+
+#[tokio::test]
+async fn concurrent_claude_agents_use_both_backends_without_moving_an_agent() {
+    let f = Fixture::with(|c| {
+        for b in c.backends.values_mut() {
+            b.capacity = 4;
+        }
+    })
+    .await;
+    let replies = join_all((0..8).map(|i| {
+        f.post(
+            "/v1/messages",
+            json!({"model":"bonded-model","stream":true}),
+        )
+        .header("x-claude-code-session-id", "shared-root")
+        .header("x-claude-code-agent-id", format!("agent-{i}"))
+        .send()
+    }))
+    .await;
+    let mut owners = Vec::new();
+    let mut streams = Vec::new();
+    for response in replies {
+        let response = response.unwrap();
+        assert_eq!(response.status(), 200);
+        owners.push(
+            response.headers()["x-apibond-backend"]
+                .to_str()
+                .unwrap()
+                .to_owned(),
+        );
+        streams.push(response.bytes_stream());
+    }
+    assert_eq!(owners.iter().filter(|o| *o == "server-a").count(), 4);
+    assert_eq!(owners.iter().filter(|o| *o == "server-b").count(), 4);
+    for stream in &mut streams {
+        while stream.next().await.is_some() {}
+    }
+    f.wait_idle().await;
+    for (i, owner) in owners.iter().enumerate() {
+        let response = f
+            .post("/v1/messages", json!({"model":"bonded-model"}))
+            .header("x-claude-code-session-id", "shared-root")
+            .header("x-claude-code-agent-id", format!("agent-{i}"))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.headers()["x-apibond-backend"], owner.as_str());
+        response.bytes().await.unwrap();
+    }
+    f.wait_idle().await;
+}
+
+#[tokio::test]
 async fn streaming_holds_capacity_and_cancels() {
     let f = Fixture::with(|c| {
         c.backends.get_mut("server-a").unwrap().capacity = 1;

@@ -1,6 +1,6 @@
 {
   "name": "apibond",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Native Rust session-affine bonding for OpenAI, Anthropic and Responses APIs",
   "type": "module",
   "license": "MIT",

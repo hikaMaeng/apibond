@@ -20,12 +20,15 @@ Capability means the upstream implements that route. Declaring a family does not
 |---|---|
 | x-apibond-session-id | Stable conversation identity; highest priority |
 | x-session-id, x-claude-code-session-id, x-codex-session-id | Session fallbacks in that order |
+| x-claude-code-agent-id | With the Claude session fallback, gives each agent its own stable affinity within that root session |
 | x-apibond-model | Public alias; required for file uploads/list and unknown URL resources |
 | x-apibond-backend | Explicit backend ID, constrained to selected model/API pool |
 | x-apibond-api | Files family: openai or anthropic; native Anthropic version/beta headers also identify Anthropic |
 | x-apibond-raw | true: trusted opt-in raw Chat/Messages path |
 
 Inspected JSON accepts `metadata.session_id` after header fallbacks; optional `user`/`metadata.user_id` fallback is disabled by default. A request ID never selects a session. The response includes `x-apibond-backend`, useful for recovery of native handles after router restart.
+
+Since 0.1.1, a Claude session plus agent ID identifies one independent agent history. Shared parent-agent IDs do not merge child histories. Missing agent IDs retain root-session affinity; higher-priority `x-apibond-session-id` or `x-session-id` deliberately overrides agent separation. A bare agent ID without a Claude session does not establish affinity. Older clients that send only a shared root ID cannot distribute their branches through this header mechanism. `RUST_LOG=apibond=debug` logs the selected backend and a hashed routing identity, without prompt or credential contents.
 
 Inspected bodies require application/json or application/*+json (parameters accepted), identity content encoding, and a public `model`. Known Responses continuation can infer alias from its previous response owner. Root model is rewritten to the configured upstream model; other bytes are unchanged.
 

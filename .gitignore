@@ -1,0 +1,10 @@
+/target/
+/work/
+/node_modules/
+/vendor/
+/*.tgz
+/apibond.json
+.env
+.env.*
+.npmrc
+*.log

@@ -1,0 +1,65 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            asset: apibond-win32-x64.exe
+            binary: target/release/apibond.exe
+          - os: ubuntu-24.04
+            asset: apibond-linux-x64
+            binary: target/release/apibond
+          - os: ubuntu-24.04-arm
+            asset: apibond-linux-arm64
+            binary: target/release/apibond
+          - os: macos-15-intel
+            asset: apibond-darwin-x64
+            binary: target/release/apibond
+          - os: macos-15
+            asset: apibond-darwin-arm64
+            binary: target/release/apibond
+    runs-on: ${{ matrix.os }}
+    env:
+      RUSTFLAGS: ${{ matrix.os == 'windows-latest' && '-C target-feature=+crt-static' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.96.0
+      - run: cargo test --locked
+      - run: cargo build --release --locked
+      - name: Stage native binary
+        shell: bash
+        run: |
+          mkdir -p release
+          cp '${{ matrix.binary }}' 'release/${{ matrix.asset }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: release/*
+  publish:
+    needs: native
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - run: node scripts/package-release.mjs release
+      - run: npm pack --ignore-scripts --pack-destination release
+      - name: Publish immutable version assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v$(node -p 'JSON.parse(require("fs").readFileSync("package.json")).version')" release/* --verify-tag --title "APIBond $(node -p 'JSON.parse(require("fs").readFileSync("package.json")).version')" --generate-notes

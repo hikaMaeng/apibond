@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "listen": "127.0.0.1:18180",
+  "inbound_auth": { "mode": "none" },
+  "runtime": { "worker_threads": null },
+  "routing": {
+    "session_ttl_secs": 3600,
+    "state_ttl_secs": 86400,
+    "max_sessions_per_model": 10000,
+    "max_state_entries": 100000,
+    "strict_file_ownership": true,
+    "user_id_fallback": false
+  },
+  "limits": {
+    "max_open_requests": 1024,
+    "max_json_bytes": 67108864,
+    "buffered_json_budget_bytes": 268435456,
+    "max_upload_bytes": 536870912
+  },
+  "transport": {
+    "connect_timeout_ms": 10000,
+    "header_timeout_ms": null,
+    "body_idle_timeout_ms": null,
+    "pool_idle_timeout_secs": 90,
+    "pool_max_idle_per_host": 128,
+    "health_interval_ms": 10000,
+    "health_timeout_ms": 2000,
+    "shutdown_timeout_secs": 30
+  },
+  "backends": {
+    "server-a": {
+      "base_url": "http://127.0.0.1:8001/v1",
+      "apis": ["openai", "anthropic", "responses"],
+      "capacity": 64,
+      "cooldown_ms": 3000,
+      "auth": { "scheme": "none" }
+    },
+    "server-b": {
+      "base_url": "http://127.0.0.1:8002/v1",
+      "apis": ["openai", "responses"],
+      "capacity": 64,
+      "cooldown_ms": 3000,
+      "auth": { "scheme": "none" }
+    }
+  },
+  "models": {
+    "bonded-model": {
+      "allow_raw": false,
+      "backends": [
+        { "backend": "server-a", "model": "actual-model" },
+        { "backend": "server-b", "model": "actual-model" }
+      ]
+    }
+  }
+}

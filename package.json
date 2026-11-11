@@ -1,0 +1,17 @@
+{
+  "name": "apibond",
+  "version": "0.1.0",
+  "description": "Native Rust session-affine bonding for OpenAI, Anthropic and Responses APIs",
+  "type": "module",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/hikaMaeng/apibond.git" },
+  "engines": { "node": ">=20" },
+  "bin": { "apibond": "scripts/cli.mjs" },
+  "files": ["scripts/cli.mjs", "scripts/install.mjs", "checksums.json", "apibond.example.json", "README.md", "LICENSE", "docs"],
+  "scripts": {
+    "postinstall": "node scripts/install.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "check": "cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings",
+    "test:rust": "cargo test --locked"
+  }
+}

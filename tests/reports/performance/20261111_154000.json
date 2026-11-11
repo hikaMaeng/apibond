@@ -1,0 +1,1405 @@
+{
+  "architecture": "x86_64",
+  "binary_sha256": "122313638ac990d54a81acba83386abb20b2261503ef8707b45ed17145902953",
+  "fixture": true,
+  "harness_worker_threads": 8,
+  "host_logical_cores": 48,
+  "native_version": "apibond 0.1.0",
+  "platform": "windows",
+  "processor_identifier": null,
+  "proxy_config": {
+    "backends": {
+      "server-a": {
+        "apis": [
+          "openai",
+          "anthropic",
+          "responses"
+        ],
+        "auth": {
+          "scheme": "none"
+        },
+        "base_url": "http://127.0.0.1:57178/v1",
+        "capacity": 256,
+        "cooldown_ms": 3000
+      }
+    },
+    "inbound_auth": {
+      "mode": "none"
+    },
+    "limits": {
+      "buffered_json_budget_bytes": 3221225472,
+      "max_json_bytes": 67108864,
+      "max_open_requests": 1024,
+      "max_upload_bytes": 536870912
+    },
+    "listen": "127.0.0.1:57179",
+    "models": {
+      "match": {
+        "backends": [
+          {
+            "backend": "server-a",
+            "model": "match"
+          }
+        ]
+      },
+      "raw": {
+        "allow_raw": true,
+        "backends": [
+          {
+            "backend": "server-a",
+            "model": "actual"
+          }
+        ]
+      },
+      "rewrite": {
+        "backends": [
+          {
+            "backend": "server-a",
+            "model": "actual"
+          }
+        ]
+      }
+    },
+    "routing": {
+      "max_sessions_per_model": 10000,
+      "max_state_entries": 100000,
+      "session_ttl_secs": 3600,
+      "state_ttl_secs": 86400,
+      "strict_file_ownership": true,
+      "user_id_fallback": false
+    },
+    "runtime": {
+      "worker_threads": 8
+    },
+    "schema_version": 1,
+    "transport": {
+      "body_idle_timeout_ms": null,
+      "connect_timeout_ms": 10000,
+      "header_timeout_ms": null,
+      "health_interval_ms": 10000,
+      "health_timeout_ms": 2000,
+      "pool_idle_timeout_secs": 90,
+      "pool_max_idle_per_host": 128,
+      "shutdown_timeout_secs": 30
+    }
+  },
+  "proxy_pid": 68944,
+  "results": [
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 5794.149267243814,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.1618,
+          "p95": 0.2418,
+          "p99": 0.2667
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.1556,
+          "p95": 0.2332,
+          "p99": 0.2589
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.1625,
+          "p95": 0.2428,
+          "p99": 0.26830000000000004
+        }
+      },
+      "kind": "json",
+      "mode": "match",
+      "payload_data_bytes": 1024,
+      "proxy": {
+        "batch_requests_per_sec": 2583.9610710114894,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.33809999999999996,
+          "p95": 0.5067,
+          "p99": 0.5975
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.3366,
+          "p95": 0.5054000000000001,
+          "p99": 0.5946
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.36029999999999995,
+          "p95": 0.5559000000000001,
+          "p99": 0.6303
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 0.0625,
+        "peak_working_set_bytes": 8204288,
+        "working_set_bytes": 8204288
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 51516.31014428592,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.605,
+          "p95": 0.7850999999999999,
+          "p99": 0.8348
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.5986,
+          "p95": 0.7842,
+          "p99": 0.8339000000000001
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.6071,
+          "p95": 0.7855,
+          "p99": 0.8352
+        }
+      },
+      "kind": "json",
+      "mode": "match",
+      "payload_data_bytes": 1024,
+      "proxy": {
+        "batch_requests_per_sec": 24323.040380047507,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 1.5061,
+          "p95": 2.1096,
+          "p99": 2.3157
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 1.5050000000000001,
+          "p95": 2.1079,
+          "p99": 2.314
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 1.567,
+          "p95": 2.1982999999999997,
+          "p99": 2.3643
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 0.09375,
+        "peak_working_set_bytes": 13987840,
+        "working_set_bytes": 12963840
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 6241.2080638358575,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.1503,
+          "p95": 0.23829999999999998,
+          "p99": 0.2797
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.14329999999999998,
+          "p95": 0.231,
+          "p99": 0.2706
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.15109999999999998,
+          "p95": 0.2394,
+          "p99": 0.2818
+        }
+      },
+      "kind": "json",
+      "mode": "rewrite",
+      "payload_data_bytes": 1024,
+      "proxy": {
+        "batch_requests_per_sec": 2756.912473413562,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.3195,
+          "p95": 0.4779,
+          "p99": 0.5796
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.3167,
+          "p95": 0.4763,
+          "p99": 0.5774
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.3412,
+          "p95": 0.5028,
+          "p99": 0.5932999999999999
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 0.15625,
+        "peak_working_set_bytes": 13987840,
+        "working_set_bytes": 12984320
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 59608.35448343307,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.5203,
+          "p95": 0.73,
+          "p99": 0.7639
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.5194000000000001,
+          "p95": 0.7288,
+          "p99": 0.7626
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.5205000000000001,
+          "p95": 0.7301,
+          "p99": 0.7646000000000001
+        }
+      },
+      "kind": "json",
+      "mode": "rewrite",
+      "payload_data_bytes": 1024,
+      "proxy": {
+        "batch_requests_per_sec": 25877.667370889645,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 1.3589,
+          "p95": 1.9142000000000001,
+          "p99": 2.0585999999999998
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 1.3494,
+          "p95": 1.9118,
+          "p99": 2.0571
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 1.387,
+          "p95": 1.9638,
+          "p99": 2.1014
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 0.234375,
+        "peak_working_set_bytes": 13987840,
+        "working_set_bytes": 13664256
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 6537.583443569938,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.1493,
+          "p95": 0.208,
+          "p99": 0.2369
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.1435,
+          "p95": 0.1992,
+          "p99": 0.22719999999999999
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.15,
+          "p95": 0.20829999999999999,
+          "p99": 0.2377
+        }
+      },
+      "kind": "json",
+      "mode": "raw",
+      "payload_data_bytes": 1024,
+      "proxy": {
+        "batch_requests_per_sec": 3042.9278671571824,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.2948,
+          "p95": 0.41750000000000004,
+          "p99": 0.4761
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.2931,
+          "p95": 0.4153,
+          "p99": 0.474
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.3199,
+          "p95": 0.447,
+          "p99": 0.505
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 0.3125,
+        "peak_working_set_bytes": 13987840,
+        "working_set_bytes": 13676544
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 39835.67782895556,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.7752,
+          "p95": 1.0598999999999998,
+          "p99": 1.0999
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 0.7732,
+          "p95": 1.0593,
+          "p99": 1.0977000000000001
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 0.7757000000000001,
+          "p95": 1.0602,
+          "p99": 1.1013
+        }
+      },
+      "kind": "json",
+      "mode": "raw",
+      "payload_data_bytes": 1024,
+      "proxy": {
+        "batch_requests_per_sec": 18799.201033956055,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 1.7856,
+          "p95": 2.7066999999999997,
+          "p99": 2.9139999999999997
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 1.7786,
+          "p95": 2.705,
+          "p99": 2.9116
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 1.8313,
+          "p95": 2.7755,
+          "p99": 3.0011
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 0.4375,
+        "peak_working_set_bytes": 13987840,
+        "working_set_bytes": 13864960
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 103.58521792003238,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 3.7150999999999996,
+          "p95": 26.6948,
+          "p99": 29.4863
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 3.6711,
+          "p95": 26.6818,
+          "p99": 29.4787
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 3.7169999999999996,
+          "p95": 26.697,
+          "p99": 29.487
+        }
+      },
+      "kind": "json",
+      "mode": "match",
+      "payload_data_bytes": 1048576,
+      "proxy": {
+        "batch_requests_per_sec": 69.09967149854218,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 8.703199999999999,
+          "p95": 31.1742,
+          "p99": 37.2604
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 8.6981,
+          "p95": 31.1665,
+          "p99": 37.2579
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 8.8525,
+          "p95": 31.205299999999998,
+          "p99": 37.3995
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 2.515625,
+        "peak_working_set_bytes": 16670720,
+        "working_set_bytes": 14278656
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 1691.550967223557,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 24.2533,
+          "p95": 29.453799999999998,
+          "p99": 39.2351
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 24.2528,
+          "p95": 29.446199999999997,
+          "p99": 39.2211
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 24.254,
+          "p95": 29.4543,
+          "p99": 39.2376
+        }
+      },
+      "kind": "json",
+      "mode": "match",
+      "payload_data_bytes": 1048576,
+      "proxy": {
+        "batch_requests_per_sec": 823.8544480899288,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 61.820800000000006,
+          "p95": 69.8777,
+          "p99": 71.4212
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 61.8187,
+          "p95": 69.8763,
+          "p99": 71.419
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 61.8619,
+          "p95": 69.9123,
+          "p99": 71.4493
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 6.453125,
+        "peak_working_set_bytes": 108343296,
+        "working_set_bytes": 36941824
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 133.9352817394049,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 2.8182,
+          "p95": 23.0284,
+          "p99": 24.8028
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 2.8114,
+          "p95": 23.018,
+          "p99": 24.7867
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 2.8192999999999997,
+          "p95": 23.0305,
+          "p99": 24.8045
+        }
+      },
+      "kind": "json",
+      "mode": "rewrite",
+      "payload_data_bytes": 1048576,
+      "proxy": {
+        "batch_requests_per_sec": 99.24491291317048,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 5.8046,
+          "p95": 25.369,
+          "p99": 29.2606
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 5.7976,
+          "p95": 25.3606,
+          "p99": 29.2545
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 5.848800000000001,
+          "p95": 25.4143,
+          "p99": 29.287
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 8.09375,
+        "peak_working_set_bytes": 108343296,
+        "working_set_bytes": 38965248
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 1498.9001234836078,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 26.3962,
+          "p95": 30.083,
+          "p99": 45.0563
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 26.395100000000003,
+          "p95": 30.074199999999998,
+          "p99": 45.043600000000005
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 26.3966,
+          "p95": 30.084,
+          "p99": 45.059000000000005
+        }
+      },
+      "kind": "json",
+      "mode": "rewrite",
+      "payload_data_bytes": 1048576,
+      "proxy": {
+        "batch_requests_per_sec": 921.2725797251658,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 55.2688,
+          "p95": 65.6764,
+          "p99": 66.43209999999999
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 55.2671,
+          "p95": 65.6741,
+          "p99": 66.4294
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 55.3228,
+          "p95": 65.7104,
+          "p99": 66.4606
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 11.859375,
+        "peak_working_set_bytes": 108343296,
+        "working_set_bytes": 39727104
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 134.03597504627115,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 2.6769,
+          "p95": 21.6306,
+          "p99": 26.8825
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 2.6687999999999996,
+          "p95": 21.6241,
+          "p99": 26.8714
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 2.6779,
+          "p95": 21.6311,
+          "p99": 26.8844
+        }
+      },
+      "kind": "json",
+      "mode": "raw",
+      "payload_data_bytes": 1048576,
+      "proxy": {
+        "batch_requests_per_sec": 90.53215436892256,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 12.3886,
+          "p95": 23.3633,
+          "p99": 31.460099999999997
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 12.386299999999999,
+          "p95": 23.3568,
+          "p99": 31.448999999999998
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 12.445,
+          "p95": 23.3947,
+          "p99": 31.4962
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 12.734375,
+        "peak_working_set_bytes": 108343296,
+        "working_set_bytes": 45350912
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 1509.5496706705112,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 29.5373,
+          "p95": 33.4982,
+          "p99": 45.5946
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 29.535800000000002,
+          "p95": 33.4859,
+          "p99": 45.5857
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 29.5385,
+          "p95": 33.499500000000005,
+          "p99": 45.6022
+        }
+      },
+      "kind": "json",
+      "mode": "raw",
+      "payload_data_bytes": 1048576,
+      "proxy": {
+        "batch_requests_per_sec": 961.780134807011,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 52.056400000000004,
+          "p95": 61.644999999999996,
+          "p99": 63.3308
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 52.0527,
+          "p95": 61.6321,
+          "p99": 63.328700000000005
+        },
+        "samples": 256,
+        "total_ms": {
+          "p50": 52.079,
+          "p95": 61.6837,
+          "p99": 63.3585
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 15.9375,
+        "peak_working_set_bytes": 108343296,
+        "working_set_bytes": 64819200
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 23.391823980033333,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 43.274699999999996,
+          "p95": 55.406200000000005,
+          "p99": 59.7799
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 43.2615,
+          "p95": 55.3986,
+          "p99": 59.7744
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 43.2762,
+          "p95": 55.4069,
+          "p99": 59.780699999999996
+        }
+      },
+      "kind": "json",
+      "mode": "match",
+      "payload_data_bytes": 16777216,
+      "proxy": {
+        "batch_requests_per_sec": 11.705559668962382,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 85.1484,
+          "p95": 104.203,
+          "p99": 105.5991
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 85.1412,
+          "p95": 104.1999,
+          "p99": 105.5878
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 85.1836,
+          "p95": 104.5638,
+          "p99": 105.6354
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 20.546875,
+        "peak_working_set_bytes": 108343296,
+        "working_set_bytes": 70148096
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 133.14426847210297,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 381.24780000000004,
+          "p95": 479.7432,
+          "p99": 480.3967
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 381.2466,
+          "p95": 479.73519999999996,
+          "p99": 480.3866
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 381.2489,
+          "p95": 479.74460000000005,
+          "p99": 480.3982
+        }
+      },
+      "kind": "json",
+      "mode": "match",
+      "payload_data_bytes": 16777216,
+      "proxy": {
+        "batch_requests_per_sec": 58.237540919834665,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 1023.4852000000001,
+          "p95": 1095.5502,
+          "p99": 1096.0483000000002
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 1023.4810000000001,
+          "p95": 1095.5475,
+          "p99": 1096.0357000000001
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 1023.5319000000001,
+          "p95": 1095.6152,
+          "p99": 1096.0864
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 58.328125,
+        "peak_working_set_bytes": 1372114944,
+        "working_set_bytes": 47177728
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 23.62200481283584,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 43.1181,
+          "p95": 52.760099999999994,
+          "p99": 54.9024
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 43.109500000000004,
+          "p95": 52.7448,
+          "p99": 54.896300000000004
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 43.1188,
+          "p95": 52.762,
+          "p99": 54.903
+        }
+      },
+      "kind": "json",
+      "mode": "rewrite",
+      "payload_data_bytes": 16777216,
+      "proxy": {
+        "batch_requests_per_sec": 12.169134541799384,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 80.676,
+          "p95": 97.2584,
+          "p99": 108.163
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 80.66579999999999,
+          "p95": 97.2556,
+          "p99": 108.1593
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 80.72229999999999,
+          "p95": 97.3014,
+          "p99": 108.21690000000001
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 62.53125,
+        "peak_working_set_bytes": 1372114944,
+        "working_set_bytes": 86904832
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 125.77093653755756,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 433.04920000000004,
+          "p95": 506.52699999999993,
+          "p99": 508.12
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 433.0385,
+          "p95": 506.52189999999996,
+          "p99": 508.108
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 433.05080000000004,
+          "p95": 506.52790000000005,
+          "p99": 508.1215
+        }
+      },
+      "kind": "json",
+      "mode": "rewrite",
+      "payload_data_bytes": 16777216,
+      "proxy": {
+        "batch_requests_per_sec": 59.06340391810009,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 981.9751,
+          "p95": 1081.5363,
+          "p99": 1082.0493
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 981.9658,
+          "p95": 1081.5336,
+          "p99": 1082.0438000000001
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 982.0107,
+          "p95": 1081.5608000000002,
+          "p99": 1082.0874000000001
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 99.5625,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 277495808
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 23.318264026655406,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 43.6603,
+          "p95": 52.6463,
+          "p99": 55.6841
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 43.647400000000005,
+          "p95": 52.639900000000004,
+          "p99": 55.6768
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 43.6777,
+          "p95": 52.6468,
+          "p99": 55.6846
+        }
+      },
+      "kind": "json",
+      "mode": "raw",
+      "payload_data_bytes": 16777216,
+      "proxy": {
+        "batch_requests_per_sec": 4.914315039583157,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 227.9999,
+          "p95": 328.46560000000005,
+          "p99": 354.9446
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 227.99179999999998,
+          "p95": 328.46049999999997,
+          "p99": 354.93390000000005
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 228.0338,
+          "p95": 328.49080000000004,
+          "p99": 354.9932
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 103.203125,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 276041728
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 117.42291919248258,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 417.0584,
+          "p95": 542.8592,
+          "p99": 544.3586
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 417.045,
+          "p95": 542.8493,
+          "p99": 544.3480000000001
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 417.06100000000004,
+          "p95": 542.8605,
+          "p99": 544.3599999999999
+        }
+      },
+      "kind": "json",
+      "mode": "raw",
+      "payload_data_bytes": 16777216,
+      "proxy": {
+        "batch_requests_per_sec": 61.316554569146774,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 843.0807,
+          "p95": 1035.9423000000002,
+          "p99": 1042.7162999999998
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 843.0789,
+          "p95": 1035.9401,
+          "p99": 1042.7051999999999
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 843.1094,
+          "p95": 1036.0127,
+          "p99": 1042.7671
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 133.734375,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 243912704
+      }
+    },
+    {
+      "concurrency": 1,
+      "direct": {
+        "batch_requests_per_sec": 1.2874184138812028,
+        "emission_to_receive_ms": {
+          "p50": 0.15,
+          "p95": 0.206,
+          "p99": 0.221
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.379,
+          "p95": 0.6116999999999999,
+          "p99": 0.6116999999999999
+        },
+        "inter_chunk_ms": {
+          "p50": 15.502500000000001,
+          "p95": 16.224,
+          "p99": 16.5094
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 15.514,
+          "p95": 16.239,
+          "p99": 16.53
+        },
+        "response_headers_ms": {
+          "p50": 0.371,
+          "p95": 0.6031,
+          "p99": 0.6031
+        },
+        "samples": 10,
+        "total_ms": {
+          "p50": 778.4131,
+          "p95": 781.3181,
+          "p99": 781.3181
+        }
+      },
+      "kind": "sse",
+      "producer_chunks": 50,
+      "producer_delay_ms": 2,
+      "proxy": {
+        "batch_requests_per_sec": 1.2852185218496146,
+        "emission_to_receive_ms": {
+          "p50": 0.237,
+          "p95": 0.332,
+          "p99": 0.37
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.8066,
+          "p95": 1.0595999999999999,
+          "p99": 1.0595999999999999
+        },
+        "inter_chunk_ms": {
+          "p50": 15.531400000000001,
+          "p95": 16.275100000000002,
+          "p99": 16.546000000000003
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 15.529,
+          "p95": 16.249,
+          "p99": 16.575
+        },
+        "response_headers_ms": {
+          "p50": 0.7987,
+          "p95": 1.0531,
+          "p99": 1.0531
+        },
+        "samples": 10,
+        "total_ms": {
+          "p50": 778.4428,
+          "p95": 781.3829,
+          "p99": 781.3829
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 133.84375,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 243863552
+      }
+    },
+    {
+      "concurrency": 64,
+      "direct": {
+        "batch_requests_per_sec": 82.2794916053063,
+        "emission_to_receive_ms": {
+          "p50": 0.228,
+          "p95": 0.461,
+          "p99": 0.549
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.775,
+          "p95": 1.0173,
+          "p99": 1.0727
+        },
+        "inter_chunk_ms": {
+          "p50": 15.503,
+          "p95": 16.1799,
+          "p99": 16.4015
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 15.489,
+          "p95": 16.149,
+          "p99": 16.241
+        },
+        "response_headers_ms": {
+          "p50": 0.7742,
+          "p95": 1.0158,
+          "p99": 1.0644
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 777.0029000000001,
+          "p95": 777.4594000000001,
+          "p99": 777.5573999999999
+        }
+      },
+      "kind": "sse",
+      "producer_chunks": 50,
+      "producer_delay_ms": 2,
+      "proxy": {
+        "batch_requests_per_sec": 82.45068160947854,
+        "emission_to_receive_ms": {
+          "p50": 0.624,
+          "p95": 1.053,
+          "p99": 1.221
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 1.8144,
+          "p95": 2.5058,
+          "p99": 2.5648
+        },
+        "inter_chunk_ms": {
+          "p50": 15.5122,
+          "p95": 16.4537,
+          "p99": 16.8115
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 15.516,
+          "p95": 16.136,
+          "p99": 16.245
+        },
+        "response_headers_ms": {
+          "p50": 1.813,
+          "p95": 2.505,
+          "p99": 2.5623
+        },
+        "samples": 64,
+        "total_ms": {
+          "p50": 775.2249,
+          "p95": 775.8299,
+          "p99": 775.9397
+        }
+      },
+      "proxy_process": {
+        "cpu_seconds": 133.84375,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 243867648
+      }
+    },
+    {
+      "direct_sse": {
+        "batch_requests_per_sec": 2.046818098456863,
+        "emission_to_receive_ms": {
+          "p50": 0.114,
+          "p95": 0.175,
+          "p99": 0.206
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 0.4393,
+          "p95": 0.4393,
+          "p99": 0.4393
+        },
+        "inter_chunk_ms": {
+          "p50": 3.0416000000000003,
+          "p95": 15.9803,
+          "p99": 16.324
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 3.037,
+          "p95": 15.965,
+          "p99": 16.276
+        },
+        "response_headers_ms": {
+          "p50": 0.4282,
+          "p95": 0.4282,
+          "p99": 0.4282
+        },
+        "samples": 1,
+        "total_ms": {
+          "p50": 353.2985,
+          "p95": 353.2985,
+          "p99": 353.2985
+        }
+      },
+      "image_base64_bytes": 62914560,
+      "kind": "mixed_multimodal_sse",
+      "native_proxy_workers": 8,
+      "parallel_images": 4,
+      "proxy_process": {
+        "cpu_seconds": 135.453125,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 239226880
+      },
+      "sse": {
+        "batch_requests_per_sec": 2.046818098456863,
+        "emission_to_receive_ms": {
+          "p50": 0.175,
+          "p95": 0.288,
+          "p99": 0.51
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 1.1072,
+          "p95": 1.1072,
+          "p99": 1.1072
+        },
+        "inter_chunk_ms": {
+          "p50": 3.0528,
+          "p95": 15.9776,
+          "p99": 16.5564
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 3.021,
+          "p95": 15.918,
+          "p99": 16.219
+        },
+        "response_headers_ms": {
+          "p50": 1.0996000000000001,
+          "p95": 1.0996000000000001,
+          "p99": 1.0996000000000001
+        },
+        "samples": 1,
+        "total_ms": {
+          "p50": 353.46709999999996,
+          "p95": 353.46709999999996,
+          "p99": 353.46709999999996
+        }
+      },
+      "uploads": {
+        "batch_requests_per_sec": 8.187272393827453,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 482.20390000000003,
+          "p95": 488.3927,
+          "p99": 488.3927
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 482.18080000000003,
+          "p95": 488.3859,
+          "p99": 488.3859
+        },
+        "samples": 4,
+        "total_ms": {
+          "p50": 482.2819,
+          "p95": 488.4521,
+          "p99": 488.4521
+        }
+      }
+    },
+    {
+      "active_after_cancel": 0,
+      "active_while_held": 8,
+      "at_one_second": {
+        "cpu_seconds": 135.453125,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 238096384
+      },
+      "at_three_seconds": {
+        "cpu_seconds": 135.453125,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 238096384
+      },
+      "before": {
+        "cpu_seconds": 135.453125,
+        "peak_working_set_bytes": 1411436544,
+        "working_set_bytes": 239226880
+      },
+      "clients": 8,
+      "kind": "slow_client_cancel",
+      "producer_bytes_per_client": 655360000
+    }
+  ],
+  "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+  "upstream_pid": 53760
+}

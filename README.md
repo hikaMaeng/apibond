@@ -7,6 +7,7 @@ APIBond는 동일 모델의 여러 API 서버를 세션별로 묶는 Rust 스트
 | 설치·설정 | [Usage](docs/usage.md) |
 | 제약 | [Constraints](docs/constraints.md) |
 | 검증 | [Testing](docs/testing.md) |
+| 실제 측정 | [Transport measurements](tests/reports/performance/20261111_154000.md) |
 | 구조·내부 | [Architecture](docs/architecture.md), [Internals](docs/internals.md) |
 | 사전 검토 계획 | [Development plan](docs/development-plan.md) |
 

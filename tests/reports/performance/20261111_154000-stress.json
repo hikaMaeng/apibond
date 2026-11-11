@@ -1,0 +1,217 @@
+{
+  "architecture": "x86_64",
+  "binary_sha256": "122313638ac990d54a81acba83386abb20b2261503ef8707b45ed17145902953",
+  "fixture": true,
+  "harness_worker_threads": 8,
+  "host_logical_cores": 48,
+  "native_version": "apibond 0.1.0",
+  "platform": "windows",
+  "processor_identifier": null,
+  "proxy_config": {
+    "backends": {
+      "server-a": {
+        "apis": [
+          "openai",
+          "anthropic",
+          "responses"
+        ],
+        "auth": {
+          "scheme": "none"
+        },
+        "base_url": "http://127.0.0.1:53684/v1",
+        "capacity": 256,
+        "cooldown_ms": 3000
+      }
+    },
+    "inbound_auth": {
+      "mode": "none"
+    },
+    "limits": {
+      "buffered_json_budget_bytes": 3221225472,
+      "max_json_bytes": 67108864,
+      "max_open_requests": 1024,
+      "max_upload_bytes": 536870912
+    },
+    "listen": "127.0.0.1:53685",
+    "models": {
+      "match": {
+        "backends": [
+          {
+            "backend": "server-a",
+            "model": "match"
+          }
+        ]
+      },
+      "raw": {
+        "allow_raw": true,
+        "backends": [
+          {
+            "backend": "server-a",
+            "model": "actual"
+          }
+        ]
+      },
+      "rewrite": {
+        "backends": [
+          {
+            "backend": "server-a",
+            "model": "actual"
+          }
+        ]
+      }
+    },
+    "routing": {
+      "max_sessions_per_model": 10000,
+      "max_state_entries": 100000,
+      "session_ttl_secs": 3600,
+      "state_ttl_secs": 86400,
+      "strict_file_ownership": true,
+      "user_id_fallback": false
+    },
+    "runtime": {
+      "worker_threads": 2
+    },
+    "schema_version": 1,
+    "transport": {
+      "body_idle_timeout_ms": null,
+      "connect_timeout_ms": 10000,
+      "header_timeout_ms": null,
+      "health_interval_ms": 10000,
+      "health_timeout_ms": 2000,
+      "pool_idle_timeout_secs": 90,
+      "pool_max_idle_per_host": 128,
+      "shutdown_timeout_secs": 30
+    }
+  },
+  "proxy_pid": 92248,
+  "results": [
+    {
+      "direct_sse": {
+        "batch_requests_per_sec": 1.4814277111423362,
+        "emission_to_receive_ms": {
+          "p50": 0.117,
+          "p95": 0.163,
+          "p99": 2.321
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 2.534,
+          "p95": 2.534,
+          "p99": 2.534
+        },
+        "inter_chunk_ms": {
+          "p50": 3.2624,
+          "p95": 16.064999999999998,
+          "p99": 16.4102
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 3.252,
+          "p95": 16.067,
+          "p99": 16.386
+        },
+        "response_headers_ms": {
+          "p50": 2.5106,
+          "p95": 2.5106,
+          "p99": 2.5106
+        },
+        "samples": 1,
+        "total_ms": {
+          "p50": 435.8794,
+          "p95": 435.8794,
+          "p99": 435.8794
+        }
+      },
+      "image_base64_bytes": 62914560,
+      "kind": "mixed_multimodal_sse",
+      "native_proxy_workers": 2,
+      "parallel_images": 4,
+      "proxy_process": {
+        "cpu_seconds": 1.359375,
+        "peak_working_set_bytes": 344768512,
+        "working_set_bytes": 11354112
+      },
+      "sse": {
+        "batch_requests_per_sec": 1.4814277111423362,
+        "emission_to_receive_ms": {
+          "p50": 0.47,
+          "p95": 2.333,
+          "p99": 3.503
+        },
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 2.8227,
+          "p95": 2.8227,
+          "p99": 2.8227
+        },
+        "inter_chunk_ms": {
+          "p50": 5.4038,
+          "p95": 16.2697,
+          "p99": 17.375600000000002
+        },
+        "producer_inter_chunk_ms": {
+          "p50": 3.219,
+          "p95": 16.066,
+          "p99": 16.434
+        },
+        "response_headers_ms": {
+          "p50": 2.8158,
+          "p95": 2.8158,
+          "p99": 2.8158
+        },
+        "samples": 1,
+        "total_ms": {
+          "p50": 438.3469,
+          "p95": 438.3469,
+          "p99": 438.3469
+        }
+      },
+      "uploads": {
+        "batch_requests_per_sec": 5.925710844569345,
+        "emission_to_receive_ms": null,
+        "errors": 0,
+        "first_byte_ms": {
+          "p50": 671.0975999999999,
+          "p95": 672.9503,
+          "p99": 672.9503
+        },
+        "inter_chunk_ms": null,
+        "producer_inter_chunk_ms": null,
+        "response_headers_ms": {
+          "p50": 671.0938,
+          "p95": 672.9463999999999,
+          "p99": 672.9463999999999
+        },
+        "samples": 4,
+        "total_ms": {
+          "p50": 671.1274999999999,
+          "p95": 672.9878,
+          "p99": 672.9878
+        }
+      }
+    },
+    {
+      "active_after_cancel": 0,
+      "active_while_held": 8,
+      "at_one_second": {
+        "cpu_seconds": 1.390625,
+        "peak_working_set_bytes": 344768512,
+        "working_set_bytes": 18305024
+      },
+      "at_three_seconds": {
+        "cpu_seconds": 1.390625,
+        "peak_working_set_bytes": 344768512,
+        "working_set_bytes": 18305024
+      },
+      "before": {
+        "cpu_seconds": 1.359375,
+        "peak_working_set_bytes": 344768512,
+        "working_set_bytes": 11354112
+      },
+      "clients": 8,
+      "kind": "slow_client_cancel",
+      "producer_bytes_per_client": 655360000
+    }
+  ],
+  "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+  "upstream_pid": 67964
+}

@@ -45,6 +45,19 @@ apibond --config apibond.json
 
 OpenAI clients use base URL `http://127.0.0.1:18180/v1`, Anthropic clients `http://127.0.0.1:18180`. Set model to the public alias and retain a stable session header across turns.
 
+## LAN deployment with same-host LM Studio
+
+[examples/lmstudio-lan.json](../examples/lmstudio-lan.json) exposes `qwen36-35b` over all local IPv4 interfaces on port 18180, backed by LM Studio instances `qwen36-35b:28` and `qwen36-35b:tuf` on the same host:
+
+```sh
+apibond --config examples/lmstudio-lan.json --check
+apibond --config examples/lmstudio-lan.json
+```
+
+`listen: "0.0.0.0:18180"` accepts both loopback and the host's assigned IPv4 addresses without hardcoding a LAN address. Clients use `http://<current-host-address>:18180/v1`; `0.0.0.0` is the bind address. The same-host LM Studio URL is `http://127.0.0.1:12345/v1`, so changing the host's LAN address does not break the upstream connection. The standard `--init` example remains loopback-only. IPv6 is not enabled by this IPv4 listener.
+
+The LAN example retains explicit inbound auth `none`; configure keys as above when needed. A wildcard listener does not configure Windows Firewall. Same-host requests to a LAN address verify binding, not another machine's firewall traversal. This example admits four requests per backend (eight total); it is distinct from the 16-per-backend concurrency-test configuration. Modify a separate deployment config to change capacity or model names. The root `apibond.json` is intentionally untracked.
+
 Optional backend health_path is origin-relative, e.g. `/health`; until its first successful probe the backend is unavailable. Optional queue_path returns `{"queue":N}` with bounded Content-Length. Capacity defaults 64; select a value appropriate to the backend. Full pinned backend returns 503, preserving locality.
 
 `transport.header_timeout_ms` and `body_idle_timeout_ms` default null. Connect timeout defaults 10s. Do not set short inference deadlines for long prefill/non-streaming reasoning. Ctrl+C/SIGTERM drains requests for shutdown_timeout_secs (default 30s).

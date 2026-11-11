@@ -21,6 +21,10 @@ No native-state migration or inference POST replay. Connection failures cool dow
 
 Maps are bounded and in-memory. Idle TTL/LRU eviction and router restart can remove ownership. Recover with the original x-apibond-backend and model header or existing compatible session. Multi-router deployments require ingress stickiness; no shared state store is included. KV residency/eviction inside inference servers is not observed.
 
+Session mappings default to one hour idle TTL and 10,000 entries per model pool. Accepted requests and stream completion/drop refresh last-use time. Maintenance removes expired inactive sessions at `transport.health_interval_ms` (default 10 seconds, plus probe/scan time); selection also checks the requested session's expiry. At capacity, LRU may evict an inactive entry before TTL; active sessions are preserved. Native handle ownership has a separate 24-hour idle TTL and 100,000-entry global LRU. Removing a mapping does not delete upstream KV, and upstream KV eviction does not automatically remove a mapping. Maintenance currently scans each session map under its mutex; maximum-size cleanup latency is not established by small-session tests.
+
+Backend capacity is admission, not a waiting queue: when no eligible backend has a free slot, selection returns 503. `queued=0` with no queue_path configured is not proof that an upstream engine has no queued work. With no model-specific health probe, `available=true` does not prove that the configured model remains loaded or that LM Link is healthy. An upstream may answer a requested model name using another loaded model; endpoint pinning alone cannot guarantee physical cache locality in that case.
+
 ## Raw path
 
 Disabled by default; model pool allow_raw=true requires identical upstream model names. Use x-apibond-model plus x-apibond-raw=true and JSON body containing that upstream model. Chat/Messages creation only. Body bytes stream without validation or rewrite; sessions must come from headers.

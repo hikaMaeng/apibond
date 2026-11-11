@@ -20,3 +20,8 @@ Performance matrix: 1 KiB/1 MiB/16 MiB opaque JSON data, unchanged/rewrite/raw p
 The benchmark runs client, mock upstream and proxy in separate processes. SSE events carry source timestamps; producer pacing, receive gaps and emission-to-receive latency are reported separately. This distinguishes upstream/OS timer jitter from relay delay. Add --stress-only after the binary argument for the two-worker/four-60-MiB-image stress case; output is work/benchmark-stress.json. Normal matrix uses eight proxy workers; effective config and binary hash are embedded in every report.
 
 Execution plan: [integration plan](../tests/plans/acceptance-20261111.md). Actual results belong in tests/reports/acceptance/ with timestamps. UI/browser tests are N/A (no UI).
+
+Real LM Studio evidence is separate from fixture transport measurements:
+
+* [Prefix matrix plan](../tests/plans/prefix-matrix-20261111.md) and [12-request prefix result](../tests/reports/prefix/20261111_214520.md): same-session repetition, suffix variation, new-session reuse on an explicitly selected backend, cross-backend cold input, and early-prefix mutation. Includes compact per-request JSON; visible answers and cache usage are separate criteria.
+* [Real concurrency result](../tests/reports/concurrency/20261111_195247.md): 8/16/32 sessions, upstream LM Link errors, client deadline limits, control-plane responsiveness and permit recovery. A balanced proxy admission count is not a successful two-engine inference result or a measurement of upstream running slots.

@@ -4,6 +4,7 @@
 /vendor/
 /*.tgz
 /apibond.json
+/deploy/**/apibond.json
 .env
 .env.*
 .npmrc

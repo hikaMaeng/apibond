@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 22
       - run: cargo fmt --check
+      - run: node scripts/check-deployments.mjs
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: cargo test --locked
       - run: node --test scripts/install.test.mjs

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "runtimeSourceCommit": "85452fb999621c755087cc8e4297d8a8e06b48e7",
+  "profileSourceCommit": "73bea42e48c2f0ae598e4c7f8b964e75da3c13f8",
+  "exampleConfig": "apibond.example.json",
+  "artifacts": [
+    {
+      "platform": "win32-x64",
+      "path": "win32-x64/apibond.exe",
+      "bytes": 7638016,
+      "sha256": "40c9cb8832428088ccba748c6ce106116a58dbf99d5507201935661979554395",
+      "source": "https://github.com/hikaMaeng/apibond/releases/download/v0.1.0/apibond-win32-x64.exe",
+      "msvcRuntime": "static"
+    }
+  ]
+}

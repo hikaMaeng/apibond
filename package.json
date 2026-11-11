@@ -12,6 +12,7 @@
     "postinstall": "node scripts/install.mjs",
     "test": "node --test scripts/*.test.mjs",
     "check": "cargo fmt --check && cargo clippy --all-targets --locked -- -D warnings",
-    "test:rust": "cargo test --locked"
+    "test:rust": "cargo test --locked",
+    "check:deploy": "node scripts/check-deployments.mjs"
   }
 }

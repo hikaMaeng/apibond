@@ -47,6 +47,8 @@ OpenAI clients use base URL `http://127.0.0.1:18180/v1`, Anthropic clients `http
 
 ## LAN deployment with same-host LM Studio
 
+The source repository also includes a ready-to-run Windows x64 binary in [deploy/v0.1.0](https://github.com/hikaMaeng/apibond/tree/main/deploy/v0.1.0), with a version manifest and SHA-256 verification. It requires neither Node nor Cargo to run. Each binary release has its own `deploy/v<version>/` directory; local runtime configuration stays separate from these versioned artifacts. These repository artifacts are separate from the npm wrapper's download/install path.
+
 [examples/lmstudio-lan.json](../examples/lmstudio-lan.json) exposes `qwen36-35b` over all local IPv4 interfaces on port 18180, backed by LM Studio instances `qwen36-35b:28` and `qwen36-35b:tuf` on the same host:
 
 ```sh

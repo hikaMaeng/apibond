@@ -5,6 +5,7 @@ APIBond는 동일 모델의 여러 API 서버를 세션별로 묶는 Rust 스트
 | 목적 | [Overview](docs/overview.md) |
 | API | [API reference](docs/api.md) |
 | 설치·설정 | [Usage](docs/usage.md) |
+| 버전별 배포 바이너리 | [Deployments](https://github.com/hikaMaeng/apibond/tree/main/deploy) |
 | 제약 | [Constraints](docs/constraints.md) |
 | 검증 | [Testing](docs/testing.md) |
 | 실제 측정 | [Transport measurements](tests/reports/performance/20261111_154000.md) |

@@ -1,0 +1,3 @@
+deploy/** text eol=lf
+deploy/**/apibond.exe binary
+deploy/**/apibond binary

@@ -1,0 +1,131 @@
+{
+  "candidate": "e4f5704e5a2ca1fa46b253da86a58a1b904f3f2f",
+  "tree": "8003f93a9d51cbf76a6b27082100171f26addd90",
+  "platform": "Windows x64",
+  "startedAt": "2026-11-13T11:42:31.317316+09:00",
+  "endedAt": "2026-11-13T11:46:31.666208+09:00",
+  "versions": {
+    "rustc": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+    "cargo": "cargo 1.96.0 (30a34c682 2026-05-25)",
+    "node": "v26.4.0"
+  },
+  "binarySha256": "b3ec8d00b9de9868c59e0d3f8cb88bc01387b4d6d066f8cde13a6dad286e275f",
+  "fixture": true,
+  "commands": [
+    {
+      "name": "cargo-test",
+      "exitCode": 0,
+      "durationSec": 145.882
+    },
+    {
+      "name": "cargo-fmt",
+      "exitCode": 0,
+      "durationSec": 0.366
+    },
+    {
+      "name": "cargo-clippy",
+      "exitCode": 0,
+      "durationSec": 93.569
+    },
+    {
+      "name": "node-installer-tests",
+      "exitCode": 0,
+      "durationSec": 0.249
+    },
+    {
+      "name": "deployment-integrity",
+      "exitCode": 0,
+      "durationSec": 0.216
+    }
+  ],
+  "checks": {
+    "inputIdle": {
+      "timeoutStatuses": [
+        408,
+        408
+      ],
+      "fullBudgetReserved": 4096,
+      "blockedStatus": 503,
+      "reservedAfterTimeout": 0,
+      "callsBeforeRecovery": 0,
+      "recoveredStatus": 200
+    },
+    "deadlineIndependence": {
+      "idleMs": 300,
+      "progressingUploadStatus": 200,
+      "progressingUploadDurationMs": 792,
+      "inferenceStatus": 200,
+      "delayedHeadersAndStreamDurationMs": 919,
+      "promptPreserved": true
+    },
+    "authentication": {
+      "valid": {
+        "Bearer": 200,
+        "bearer": 200,
+        "BEARER": 200
+      },
+      "invalid": {
+        "wrong-token": 401,
+        "token-case": 401,
+        "wrong-scheme": 401,
+        "no-separator": 401
+      },
+      "twoCredentials": 401
+    },
+    "failedReassignment": {
+      "failedStatus": 503,
+      "mappingsBefore": 5,
+      "mappingsAfterFailed": 5,
+      "recoveredOwner": "server-a"
+    },
+    "successfulReassignment": {
+      "newOwner": "server-b",
+      "followupOwner": "server-b",
+      "mappingCount": 5
+    },
+    "queueFallback": {
+      "samples": [
+        {
+          "failure": "http-failure",
+          "retainedQueue": 0,
+          "available": true,
+          "routes": [
+            "server-b",
+            "server-a",
+            "server-b",
+            "server-a",
+            "server-b",
+            "server-a"
+          ]
+        },
+        {
+          "failure": "invalid-json",
+          "retainedQueue": 0,
+          "available": true,
+          "routes": [
+            "server-b",
+            "server-a",
+            "server-b",
+            "server-a",
+            "server-b",
+            "server-a"
+          ]
+        }
+      ],
+      "restoredQueue": 40
+    }
+  },
+  "success": true,
+  "upstreamCredentialStripping": true,
+  "childExited": true,
+  "childExitCode": null,
+  "childSignalCode": "SIGTERM",
+  "sourceEvidenceSha256": {
+    "run.json": "980161894d132dbb967173e67af1104bba9fc10a1aead2c8ad73940e4148894d",
+    "independent-http.json": "c95e372b48c36cecff15f88a72491d9fafb9463c2083e8e195a28d3fec97725d",
+    "cargo-test.log": "849035f7657bd5b340050c52841baaf22f5b7ef975186880527043dd92b33a3d",
+    "cargo-clippy.log": "fdf1d5f2df996c903d7966893ce319ce2bc87ffab66699c43bd2e8170294e7df",
+    "node-installer-tests.log": "6bf4e35b8dd5ec13ab830cc5e46b630c41abf66df8b77a33b8ca096e8b17d29c",
+    "deployment-integrity.log": "36485fe7b2d349a28667189bea64f07770528b1f062bd7e30f0f51d43dab812e"
+  }
+}

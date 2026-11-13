@@ -1,0 +1,311 @@
+{
+  "candidate": "2e9061b78db0a9cff128c5972aa4e3867012fdc3",
+  "timestamp": "2026-11-13T22:09:13.338637+09:00",
+  "environment": {
+    "os": "Windows x64",
+    "rust": "1.96.0",
+    "node": "26.4.0"
+  },
+  "commands": [
+    {
+      "name": "rust",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--target-dir",
+        "F:\\dev\\apibond\\work\\embeddings-20261113\\target-root"
+      ],
+      "exit": 0,
+      "seconds": 116.42
+    },
+    {
+      "name": "fmt",
+      "command": [
+        "cargo",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.44
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--locked",
+        "--target-dir",
+        "F:\\dev\\apibond\\work\\embeddings-20261113\\target-root",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "seconds": 77.73
+    },
+    {
+      "name": "installer",
+      "command": [
+        "node",
+        "--test",
+        "scripts/install.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.29
+    },
+    {
+      "name": "deployments",
+      "command": [
+        "node",
+        "scripts/check-deployments.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.3
+    },
+    {
+      "name": "live",
+      "command": [
+        "node",
+        "C:\\Users\\hika0\\Documents\\Codex\\2026-11-11\\new-chat-2\\embeddings-20261113\\validate-live.mjs",
+        "F:\\dev\\apibond\\work\\embeddings-20261113\\target-root\\debug\\apibond.exe"
+      ],
+      "exit": 0,
+      "seconds": 10.98
+    },
+    {
+      "name": "diff",
+      "command": [
+        "git",
+        "-C",
+        "F:\\dev\\apibond",
+        "diff",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.07
+    }
+  ],
+  "live": {
+    "executable": "F:\\dev\\apibond\\work\\embeddings-20261113\\target-root\\debug\\apibond.exe",
+    "binarySha256": "c2e3df74c77d993e20c2127e602fb3d6a8a97cf65132ed1c8005dd7002e672c4",
+    "version": "apibond 0.1.1",
+    "check": "Configuration valid: 1 models, 1 backends",
+    "startedAt": "2026-11-13T13:08:44.394Z",
+    "upstream": "http://192.168.0.6:12345",
+    "upstreamModel": "embeddinggemma2:mp",
+    "alias": "embeddinggemma2",
+    "checks": [
+      {
+        "name": "string",
+        "status": 200,
+        "backend": "lmstudio-embedding",
+        "count": 1,
+        "indexes": [
+          0
+        ],
+        "dimensions": [
+          768
+        ],
+        "maxAbsoluteDifference": 0,
+        "outputFormats": [
+          "float"
+        ],
+        "directMs": 180.8834999999999,
+        "proxyMs": 171.18629999999985
+      },
+      {
+        "name": "oneElementBatch",
+        "status": 200,
+        "backend": "lmstudio-embedding",
+        "count": 1,
+        "indexes": [
+          0
+        ],
+        "dimensions": [
+          768
+        ],
+        "maxAbsoluteDifference": 0,
+        "outputFormats": [
+          "float"
+        ],
+        "directMs": 184.66750000000002,
+        "proxyMs": 278.68000000000006
+      },
+      {
+        "name": "batch3",
+        "status": 200,
+        "backend": "lmstudio-embedding",
+        "count": 3,
+        "indexes": [
+          0,
+          1,
+          2
+        ],
+        "dimensions": [
+          768,
+          768,
+          768
+        ],
+        "maxAbsoluteDifference": 0,
+        "outputFormats": [
+          "float",
+          "float",
+          "float"
+        ],
+        "directMs": 470.9060999999999,
+        "proxyMs": 597.6113
+      },
+      {
+        "name": "reversedBatch",
+        "status": 200,
+        "backend": "lmstudio-embedding",
+        "count": 3,
+        "indexes": [
+          0,
+          1,
+          2
+        ],
+        "dimensions": [
+          768,
+          768,
+          768
+        ],
+        "maxAbsoluteDifference": 0,
+        "outputFormats": [
+          "float",
+          "float",
+          "float"
+        ],
+        "directMs": 446.84360000000015,
+        "proxyMs": 569.0106000000001
+      },
+      {
+        "name": "batch16",
+        "status": 200,
+        "backend": "lmstudio-embedding",
+        "count": 16,
+        "indexes": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "dimensions": [
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768,
+          768
+        ],
+        "maxAbsoluteDifference": 0,
+        "outputFormats": [
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float",
+          "float"
+        ],
+        "directMs": 2914.6359,
+        "proxyMs": 3013.1991000000007
+      },
+      {
+        "name": "base64NativeBehavior",
+        "status": 200,
+        "backend": "lmstudio-embedding",
+        "count": 3,
+        "indexes": [
+          0,
+          1,
+          2
+        ],
+        "dimensions": [
+          768,
+          768,
+          768
+        ],
+        "maxAbsoluteDifference": 0,
+        "outputFormats": [
+          "float",
+          "float",
+          "float"
+        ],
+        "directMs": 583.0414000000001,
+        "proxyMs": 491.40760000000046
+      },
+      {
+        "name": "tokenIdsNativeBehavior",
+        "status": 400,
+        "backend": "lmstudio-embedding",
+        "error": "'input' field must be a string or an array of strings",
+        "directMs": 11.852599999998347,
+        "proxyMs": 16.82980000000134
+      },
+      {
+        "name": "tokenBatchNativeBehavior",
+        "status": 400,
+        "backend": "lmstudio-embedding",
+        "error": "'input' field must be a string or an array of strings",
+        "directMs": 14.189499999998588,
+        "proxyMs": 15.81919999999991
+      }
+    ],
+    "origin": "http://127.0.0.1:61727",
+    "generativeExcluded": true,
+    "status": {
+      "backends": [
+        {
+          "active": 0,
+          "available": true,
+          "capacity": 64,
+          "id": "lmstudio-embedding",
+          "queued": 0
+        }
+      ],
+      "buffer_bytes_reserved": 0,
+      "models": {
+        "embeddinggemma2": 0
+      },
+      "state_entries": 0
+    },
+    "success": true,
+    "childExited": true,
+    "endedAt": "2026-11-13T13:08:55.159Z"
+  },
+  "rustTestsPassed": 36
+}

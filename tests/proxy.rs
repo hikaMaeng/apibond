@@ -34,6 +34,8 @@ struct Mock {
     id: String,
     seen: Arc<Mutex<Vec<Seen>>>,
     counter: Arc<AtomicUsize>,
+    health_status: Arc<AtomicUsize>,
+    queue_mode: Arc<AtomicUsize>,
 }
 struct Server {
     url: String,
@@ -61,6 +63,28 @@ async fn serve(router: Router) -> Server {
 }
 async fn mock(State(state): State<Mock>, request: Request) -> Response {
     let path = request.uri().path_and_query().unwrap().as_str().to_string();
+    if path == "/health" {
+        return StatusCode::from_u16(state.health_status.load(Ordering::Relaxed) as u16)
+            .unwrap()
+            .into_response();
+    }
+    if path == "/queue" {
+        return match state.queue_mode.load(Ordering::Relaxed) {
+            0 => axum::Json(json!({"queue":40})).into_response(),
+            1 => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+            2 => ([("content-type", "application/json")], "invalid JSON").into_response(),
+            3 => Body::from_stream(futures_util::stream::once(async {
+                Ok::<_, std::io::Error>(Bytes::from_static(b"{\"queue\":40}"))
+            }))
+            .into_response(),
+            4 => axum::Json(json!({"queue":-1})).into_response(),
+            5 => {
+                tokio::time::sleep(Duration::from_millis(200)).await;
+                axum::Json(json!({"queue":40})).into_response()
+            }
+            _ => axum::Json(json!({"queue":0})).into_response(),
+        };
+    }
     let headers = request.headers().clone();
     let body = to_bytes(request.into_body(), 128 * 1024 * 1024)
         .await
@@ -111,6 +135,7 @@ async fn mock(State(state): State<Mock>, request: Request) -> Response {
         return ([("content-encoding", "gzip")], "compressed garbage").into_response();
     }
     if value["stream"] == true {
+        let hold = value["mode"] == "hold";
         let response = path.starts_with("/v1/responses");
         let payload = if response {
             format!(
@@ -121,6 +146,7 @@ async fn mock(State(state): State<Mock>, request: Request) -> Response {
         };
         let output = async_stream::stream! {
             for c in payload.as_bytes().chunks(3) {yield Ok::<_,std::io::Error>(Bytes::copy_from_slice(c));}
+            if hold { std::future::pending::<()>().await; }
             tokio::time::sleep(Duration::from_millis(300)).await;
             yield Ok(Bytes::from_static(b"data: [DONE]\n\n"));
         };
@@ -173,11 +199,15 @@ impl Fixture {
             id: "a".into(),
             seen: Arc::default(),
             counter: Arc::default(),
+            health_status: Arc::new(AtomicUsize::new(200)),
+            queue_mode: Arc::default(),
         };
         let b = Mock {
             id: "b".into(),
             seen: Arc::default(),
             counter: Arc::default(),
+            health_status: Arc::new(AtomicUsize::new(200)),
+            queue_mode: Arc::default(),
         };
         let sa = serve(Router::new().fallback(mock).with_state(a.clone())).await;
         let sb = serve(Router::new().fallback(mock).with_state(b.clone())).await;
@@ -1007,6 +1037,17 @@ impl Drop for ChildGuard {
 #[tokio::test]
 async fn actual_binary_authentication_scope_and_upstream_credential_replacement() {
     use apibond::config::{AuthScheme, BackendAuth, InboundAuth};
+    fn make_auth_request(
+        client: &reqwest::Client,
+        base: &str,
+        credential: &str,
+    ) -> reqwest::RequestBuilder {
+        client
+            .post(format!("{base}/v1/chat/completions"))
+            .header("content-type", "application/json")
+            .header("authorization", credential)
+            .body(r#"{"model":"bonded-model"}"#)
+    }
     let f = Fixture::new().await;
     let mut config = f.app.config.clone();
     let reservation = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
@@ -1050,6 +1091,45 @@ async fn actual_binary_authentication_scope_and_upstream_credential_replacement(
     })
     .await
     .unwrap();
+    for scheme in ["Bearer", "bearer", "BEARER"] {
+        let response = make_auth_request(&f.client, &base, &format!("{scheme} front-key"))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), 200, "scheme {scheme}");
+        response.bytes().await.unwrap();
+    }
+    for credential in [
+        "Bearer Front-key",
+        "bearer wrong-key",
+        "Bearer",
+        "Bearerfront-key",
+        "Basic front-key",
+    ] {
+        let response = make_auth_request(&f.client, &base, credential)
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), 401, "invalid credential {credential}");
+    }
+    assert_eq!(
+        make_auth_request(&f.client, &base, "Bearer front-key")
+            .header("authorization", "bearer front-key")
+            .send()
+            .await
+            .unwrap()
+            .status(),
+        401
+    );
+    assert_eq!(
+        make_auth_request(&f.client, &base, "Bearer front-key")
+            .header("x-api-key", "front-key")
+            .send()
+            .await
+            .unwrap()
+            .status(),
+        401
+    );
     let make = |path: &str| {
         f.client
             .post(format!("{base}{path}"))
@@ -1215,6 +1295,181 @@ fn review_state_lru_is_bounded_and_collisions_need_a_pin() {
         1,
     );
     assert!(app.owner([0; 32], "openai", "resp_collision").is_none());
+}
+
+struct MaintenanceGuard(JoinHandle<()>);
+impl Drop for MaintenanceGuard {
+    fn drop(&mut self) {
+        self.0.abort();
+    }
+}
+
+async fn wait_for_probe(condition: impl Fn() -> bool) {
+    tokio::time::timeout(Duration::from_secs(2), async {
+        while !condition() {
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .expect("maintenance probe did not reach the expected state");
+}
+
+#[tokio::test]
+async fn failed_reassignment_preserves_affinity_when_the_owner_recovers() {
+    let f = Fixture::with(|c| {
+        c.backends.get_mut("server-a").unwrap().health_path = Some("/health".into());
+        for backend in c.backends.values_mut() {
+            backend.capacity = 1;
+        }
+        c.transport.health_interval_ms = 10;
+    })
+    .await;
+    let _maintenance = MaintenanceGuard(App::spawn_maintenance(&f.app));
+    wait_for_probe(|| f.app.backends[0].available()).await;
+    for session in ["stable", "warm-a-1", "warm-a-2", "warm-a-3"] {
+        let response = f
+            .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+            .header("x-session-id", session)
+            .header("x-apibond-backend", "server-a")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(response.status(), 200);
+        response.bytes().await.unwrap();
+    }
+    let occupied = f
+        .post(
+            "/v1/chat/completions",
+            json!({"model":"bonded-model","stream":true,"mode":"hold"}),
+        )
+        .header("x-session-id", "occupied-b")
+        .header("x-apibond-backend", "server-b")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(occupied.status(), 200);
+    let mappings = f.app.status()["models"]["bonded-model"].as_u64().unwrap();
+    f.a.health_status.store(503, Ordering::Relaxed);
+    wait_for_probe(|| !f.app.backends[0].available()).await;
+    let rejected = f
+        .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+        .header("x-session-id", "stable")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(rejected.status(), 503);
+    assert_eq!(f.app.status()["models"]["bonded-model"], mappings);
+    f.a.health_status.store(200, Ordering::Relaxed);
+    wait_for_probe(|| f.app.backends[0].available()).await;
+    drop(occupied);
+    f.wait_idle().await;
+    let continued = f
+        .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+        .header("x-session-id", "stable")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(continued.status(), 200);
+    assert_eq!(continued.headers()["x-apibond-backend"], "server-a");
+    continued.bytes().await.unwrap();
+    assert_eq!(f.app.status()["models"]["bonded-model"], mappings);
+}
+
+#[tokio::test]
+async fn successful_reassignment_updates_affinity_and_session_counts() {
+    let f = Fixture::with(|c| {
+        c.backends.get_mut("server-a").unwrap().health_path = Some("/health".into());
+        c.transport.health_interval_ms = 10;
+    })
+    .await;
+    let _maintenance = MaintenanceGuard(App::spawn_maintenance(&f.app));
+    wait_for_probe(|| f.app.backends[0].available()).await;
+    let first = f
+        .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+        .header("x-session-id", "stable")
+        .header("x-apibond-backend", "server-a")
+        .send()
+        .await
+        .unwrap();
+    first.bytes().await.unwrap();
+    f.a.health_status.store(503, Ordering::Relaxed);
+    wait_for_probe(|| !f.app.backends[0].available()).await;
+    let moved = f
+        .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+        .header("x-session-id", "stable")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(moved.status(), 200);
+    assert_eq!(moved.headers()["x-apibond-backend"], "server-b");
+    moved.bytes().await.unwrap();
+    assert_eq!(f.app.status()["models"]["bonded-model"], 1);
+    f.a.health_status.store(200, Ordering::Relaxed);
+    wait_for_probe(|| f.app.backends[0].available()).await;
+    let continued = f
+        .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+        .header("x-session-id", "stable")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(continued.headers()["x-apibond-backend"], "server-b");
+    continued.bytes().await.unwrap();
+    let cursor = f
+        .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+        .header("x-apibond-backend", "server-a")
+        .send()
+        .await
+        .unwrap();
+    cursor.bytes().await.unwrap();
+    let fresh = f
+        .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+        .header("x-session-id", "fresh")
+        .send()
+        .await
+        .unwrap();
+    assert_eq!(fresh.headers()["x-apibond-backend"], "server-a");
+    fresh.bytes().await.unwrap();
+    assert_eq!(f.app.status()["models"]["bonded-model"], 2);
+}
+
+#[tokio::test]
+async fn maintenance_discards_failed_and_invalid_queue_samples() {
+    let f = Fixture::with(|c| {
+        c.backends.get_mut("server-a").unwrap().queue_path = Some("/queue".into());
+        c.transport.health_interval_ms = 10;
+        c.transport.health_timeout_ms = 40;
+    })
+    .await;
+    let _maintenance = MaintenanceGuard(App::spawn_maintenance(&f.app));
+    for mode in 1..=5 {
+        f.a.queue_mode.store(0, Ordering::Relaxed);
+        wait_for_probe(|| f.app.backends[0].queue.load(Ordering::Relaxed) == 40).await;
+        f.a.queue_mode.store(mode, Ordering::Relaxed);
+        wait_for_probe(|| f.app.backends[0].queue.load(Ordering::Relaxed) == 0).await;
+        assert!(f.app.backends[0].available());
+        let mut selected = std::collections::HashSet::new();
+        for request in 0..2 {
+            let response = f
+                .post("/v1/chat/completions", json!({"model":"bonded-model"}))
+                .header("x-session-id", format!("queue-{mode}-{request}"))
+                .send()
+                .await
+                .unwrap();
+            assert_eq!(response.status(), 200);
+            selected.insert(
+                response.headers()["x-apibond-backend"]
+                    .to_str()
+                    .unwrap()
+                    .to_string(),
+            );
+            response.bytes().await.unwrap();
+        }
+        assert_eq!(selected.len(), 2, "invalid queue mode {mode}");
+    }
+    f.a.queue_mode.store(0, Ordering::Relaxed);
+    wait_for_probe(|| f.app.backends[0].queue.load(Ordering::Relaxed) == 40).await;
+    f.a.queue_mode.store(6, Ordering::Relaxed);
+    wait_for_probe(|| f.app.backends[0].queue.load(Ordering::Relaxed) == 0).await;
 }
 
 #[test]

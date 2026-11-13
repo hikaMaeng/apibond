@@ -267,7 +267,11 @@ impl App {
             return Ok([0; 32]);
         }
         let credential = if let Some(v) = auth.first() {
-            v.to_str().ok().and_then(|s| s.strip_prefix("Bearer "))
+            v.to_str().ok().and_then(|s| {
+                s.split_once(' ')
+                    .filter(|(scheme, _)| scheme.eq_ignore_ascii_case("Bearer"))
+                    .map(|(_, credential)| credential)
+            })
         } else {
             api.first().and_then(|v| v.to_str().ok())
         };
@@ -394,14 +398,13 @@ impl App {
                 if forced.is_some() || r.needs_pin || !r.owners.is_empty() {
                     return Err(RouteError::new(503, "state owner is unavailable"));
                 }
-                if let Some(k) = &key {
-                    if sessions.entries.get(k).is_some_and(|s| s.active > 0) {
-                        return Err(RouteError::new(
-                            503,
-                            "session still has requests on unavailable backend",
-                        ));
-                    }
-                    sessions.remove(k);
+                if let Some(k) = &key
+                    && sessions.entries.get(k).is_some_and(|s| s.active > 0)
+                {
+                    return Err(RouteError::new(
+                        503,
+                        "session still has requests on unavailable backend",
+                    ));
                 }
                 preferred = None;
             }
@@ -446,6 +449,13 @@ impl App {
         for (position, binding, _, _) in candidates {
             if let Some(capacity) = self.backends[binding.backend].reserve() {
                 if let Some(k) = &key {
+                    if sessions
+                        .entries
+                        .peek(k)
+                        .is_some_and(|entry| entry.backend != binding.backend)
+                    {
+                        sessions.remove(k);
+                    }
                     if !sessions.entries.contains(k)
                         && sessions.entries.len() >= self.config.routing.max_sessions_per_model
                     {
@@ -536,6 +546,7 @@ impl App {
                             .send()
                             .await;
                         if is_queue {
+                            let mut queue = 0;
                             if let Ok(res) = response
                                 && res.status().is_success()
                                 && res.content_length().is_some_and(|n| n <= 16384)
@@ -543,11 +554,9 @@ impl App {
                                 && let Ok(v) = serde_json::from_slice::<Value>(&bytes)
                                 && let Some(n) = v.get("queue").and_then(Value::as_u64)
                             {
-                                backend.queue.store(
-                                    n.min(usize::MAX as u64 / 4) as usize,
-                                    Ordering::Relaxed,
-                                );
+                                queue = n.min(usize::MAX as u64 / 4) as usize;
                             }
+                            backend.queue.store(queue, Ordering::Relaxed);
                         } else {
                             backend.ready.store(
                                 response.is_ok_and(|r| r.status().is_success()),

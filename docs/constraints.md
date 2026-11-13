@@ -1,5 +1,7 @@
 # Constraints and state contract
 
+Changes marked **unreleased source** are not included in published v0.1.1 binaries or the existing `deploy/v0.1.1` artifacts.
+
 ## State selection
 
 Sessions are scoped to inbound credential and public model pool. Native handle lookup is scoped to credential/provider/ID; its owner must belong to the selected model pool. When inbound auth is explicitly none, callers share one scope. IDs colliding across backends are treated as unknown and require a pin.
@@ -21,11 +23,15 @@ Claude Code child histories use `(root session ID, agent ID)` as their affinity 
 
 No native-state migration or inference POST replay. Connection failures cool down a backend; stateless next requests may repin. A known state owner that is unavailable returns 503. An existing session changing to an unsupported API family returns 409; start a separate session or select a compatible owner.
 
+**Unreleased source:** if reserving an alternative backend fails, the existing session mapping is preserved. Mapping ownership and per-backend session counts change only after the alternative reservation succeeds.
+
 Maps are bounded and in-memory. Idle TTL/LRU eviction and router restart can remove ownership. Recover with the original x-apibond-backend and model header or existing compatible session. Multi-router deployments require ingress stickiness; no shared state store is included. KV residency/eviction inside inference servers is not observed.
 
 Session mappings default to one hour idle TTL and 10,000 entries per model pool. Accepted requests and stream completion/drop refresh last-use time. Maintenance removes expired inactive sessions at `transport.health_interval_ms` (default 10 seconds, plus probe/scan time); selection also checks the requested session's expiry. At capacity, LRU may evict an inactive entry before TTL; active sessions are preserved. Native handle ownership has a separate 24-hour idle TTL and 100,000-entry global LRU. Removing a mapping does not delete upstream KV, and upstream KV eviction does not automatically remove a mapping. Maintenance currently scans each session map under its mutex; maximum-size cleanup latency is not established by small-session tests.
 
 Backend capacity is admission, not a waiting queue: when no eligible backend has a free slot, selection returns 503. `queued=0` with no queue_path configured is not proof that an upstream engine has no queued work. With no model-specific health probe, `available=true` does not prove that the configured model remains loaded or that LM Link is healthy. An upstream may answer a requested model name using another loaded model; endpoint pinning alone cannot guarantee physical cache locality in that case.
+
+**Unreleased source:** a failed or invalid `queue_path` sample resets the stored queue value to zero, so selection uses local active requests until a valid sample arrives. This does not change the backend's health-probe status; the zero value after a failed sample does not establish that the inference engine's queue is empty.
 
 ## Raw path
 
@@ -36,6 +42,8 @@ Raw is a trusted optimization: body model, file handles and native state are unc
 ## Memory and transport
 
 Inspected JSON default 64 MiB/request and 256 MiB aggregate reservation. Reserve twice Content-Length (unknown length: twice per-request maximum) before reading, reject admission with 503. After reading, shrink reservation to twice actual length. The remaining permit is attached to shared Bytes ownership and released when the last upstream upload reference is freed, independently of inference response time. This budgets body buffers and allocator growth, not total process RSS; session/owner metadata, transport buffers and observer stack add bounded per-request overhead. Upload default 512 MiB, enforced while streaming; partial bytes may already reach upstream when an oversized streamed body is aborted.
+
+**Unreleased source:** `transport.json_body_idle_timeout_ms` defaults to 60000 and bounds each wait for the next inspected JSON input chunk. An expired wait returns 408 and releases the JSON reservation and global request permit before any upstream inference call. `null` disables the input idle deadline; zero is invalid. Progressing uploads may take longer in total, and inference/response waits are independent. Raw JSON and multipart upload paths are outside this option's scope.
 
 Resource lifecycle URL IDs accept ASCII letters, digits, underscore and hyphen; path-normalization characters are rejected. Native tool input arguments remain opaque, including objects with arbitrary keys/types. tools:null and native optional file_ids:null pass through.
 

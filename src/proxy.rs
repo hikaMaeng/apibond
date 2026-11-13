@@ -59,13 +59,25 @@ impl AsRef<[u8]> for BudgetedBytes {
     }
 }
 const QUANTUM: usize = 64 * 1024;
-async fn collect_json(body: Body, limit: usize) -> Result<(Vec<Bytes>, usize), RouteError> {
+async fn collect_json(
+    body: Body,
+    limit: usize,
+    idle_ms: Option<u64>,
+) -> Result<(Vec<Bytes>, usize), RouteError> {
     let mut input = body.into_data_stream();
     let mut pieces = Vec::new();
     let mut small = BytesMut::new();
     let mut total = 0usize;
     let mut reads = 0usize;
-    while let Some(chunk) = input.next().await {
+    loop {
+        let next = if let Some(ms) = idle_ms {
+            tokio::time::timeout(Duration::from_millis(ms), input.next())
+                .await
+                .map_err(|_| failure(408, "JSON request body idle timeout elapsed"))?
+        } else {
+            input.next().await
+        };
+        let Some(chunk) = next else { break };
         let mut chunk = chunk.map_err(|_| failure(400, "request body read failed"))?;
         total = total
             .checked_add(chunk.len())
@@ -397,7 +409,12 @@ async fn dispatch(app: Arc<App>, request: Request) -> Result<Response, RouteErro
                 .try_acquire_many_owned(reserve as u32)
                 .map_err(|_| failure(503, "buffered JSON memory budget exhausted"))?,
         );
-        let (pieces, total) = collect_json(original_body.take().unwrap(), limit).await?;
+        let (pieces, total) = collect_json(
+            original_body.take().unwrap(),
+            limit,
+            app.config.transport.json_body_idle_timeout_ms,
+        )
+        .await?;
         let retained = (total.max(1) * 2) as u32;
         let budget = body_budget.as_mut().unwrap();
         if budget.num_permits() > retained as usize {

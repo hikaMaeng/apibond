@@ -76,6 +76,8 @@ Optional backend health_path is origin-relative, e.g. `/health`; until its first
 
 `transport.header_timeout_ms` and `body_idle_timeout_ms` default null. Connect timeout defaults 10s. Do not set short inference deadlines for long prefill/non-streaming reasoning. Ctrl+C/SIGTERM drains requests for shutdown_timeout_secs (default 30s).
 
+**Unreleased source option:** `transport.json_body_idle_timeout_ms` defaults to 60000ms; `null` disables it and zero is invalid. It limits each wait for another inspected JSON input chunk, returning 408 and releasing admission if the sender stops. It does not limit total progressing upload time, inference, or response streaming, and does not apply to raw/multipart requests. Configurations that omit it inherit the default after upgrading the source build. Published v0.1.1 binaries do not support this option; do not add the field to a configuration used by those binaries.
+
 `runtime.worker_threads` controls native Tokio workers. null defaults to min(logical cores, 8), avoiding unnecessary workers on large hosts; choose 1..512 explicitly for your load. Requests >=1 MiB are inspected on the bounded-admission blocking pool so large multimodal JSON does not monopolize streaming workers.
 
 Source build: `cargo build --release --locked`, then run target/release/apibond[.exe]. An npm Git URL is also supported: `npm install -g github:hikaMaeng/apibond#v0.1.1`. Release tgz embeds binary hashes; Git installs retrieve hashes from the same hosted release. Hash checks detect corruption, not an independently signed release identity. If scripts are disabled, first CLI use performs the same install; a read-only global prefix falls back to the user's cache.

@@ -109,6 +109,7 @@ pub struct Transport {
     pub connect_timeout_ms: u64,
     pub header_timeout_ms: Option<u64>,
     pub body_idle_timeout_ms: Option<u64>,
+    pub json_body_idle_timeout_ms: Option<u64>,
     pub pool_idle_timeout_secs: u64,
     pub pool_max_idle_per_host: usize,
     pub health_interval_ms: u64,
@@ -121,6 +122,7 @@ impl Default for Transport {
             connect_timeout_ms: 10000,
             header_timeout_ms: None,
             body_idle_timeout_ms: None,
+            json_body_idle_timeout_ms: Some(60_000),
             pool_idle_timeout_secs: 90,
             pool_max_idle_per_host: 128,
             health_interval_ms: 10000,
@@ -262,6 +264,7 @@ impl Config {
             || t.shutdown_timeout_secs == 0
             || t.header_timeout_ms == Some(0)
             || t.body_idle_timeout_ms == Some(0)
+            || t.json_body_idle_timeout_ms == Some(0)
         {
             return Err("timeouts must be positive or null".into());
         }

@@ -21,6 +21,7 @@
     "connect_timeout_ms": 10000,
     "header_timeout_ms": null,
     "body_idle_timeout_ms": null,
+    "json_body_idle_timeout_ms": 60000,
     "pool_idle_timeout_secs": 90,
     "pool_max_idle_per_host": 128,
     "health_interval_ms": 10000,

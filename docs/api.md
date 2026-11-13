@@ -3,6 +3,7 @@
 | Method | Path | Backend capability |
 |---|---|---|
 | POST | /v1/chat/completions | openai |
+| POST | /v1/embeddings | embeddings (unreleased source) |
 | POST | /v1/messages, /v1/messages/count_tokens | anthropic |
 | POST | /v1/responses, /v1/responses/compact, /v1/responses/input_tokens | responses |
 | GET, DELETE | /v1/responses/{id} | responses |
@@ -15,6 +16,10 @@
 | GET | /healthz | public liveness |
 
 Capability means the upstream implements that route. Declaring a family does not add missing routes to a backend. Query strings and native error responses pass through. Responses WebSocket mode is outside this HTTP contract.
+
+**Unreleased source:** `embeddings` is a separate capability from `openai` Chat Completions. Embedding-only backends do not receive Chat/Messages/Responses requests; Chat-only backends do not receive embeddings requests. Published v0.1.1 binaries do not include this route or configuration value.
+
+Embeddings accepts native `input` as a string, string array, token-ID array, or array of token-ID arrays. The router only reads routing fields and rewrites the root model alias; it forwards the complete batch in one upstream request without splitting, reordering, re-encoding, or applying Responses/file ownership rules. `encoding_format`, `dimensions`, `user`, and other fields remain unchanged. The backend validates inputs and options. Response vectors, `data[].index`, model, usage, encoding, and native errors pass through unchanged. Raw mode is not available for embeddings.
 
 | Header | Contract |
 |---|---|

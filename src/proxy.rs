@@ -232,6 +232,12 @@ fn endpoint(method: &Method, path: &str, headers: &HeaderMap) -> Result<Endpoint
             ..base
         });
     }
+    if path == "/v1/embeddings" && post {
+        return Ok(Endpoint {
+            api: Api::Embeddings,
+            ..base
+        });
+    }
     if matches!(path, "/v1/messages" | "/v1/messages/count_tokens") && post {
         return Ok(Endpoint {
             api: Api::Anthropic,
@@ -422,17 +428,22 @@ async fn dispatch(app: Arc<App>, request: Request) -> Result<Response, RouteErro
             drop(budget.split(release as usize));
         }
         let fallback = app.config.routing.user_id_fallback;
+        let inspect_body = if ep.api == Api::Embeddings {
+            inspect::inspect_embeddings
+        } else {
+            inspect::inspect
+        };
         let (inspected, data, budget) = if total >= 1024 * 1024 {
             tokio::task::spawn_blocking(move || {
                 let data = assemble(pieces, total);
-                let result = inspect::inspect(&data, fallback);
+                let result = inspect_body(&data, fallback);
                 (result, data, body_budget)
             })
             .await
             .map_err(|_| failure(500, "JSON inspection worker failed"))?
         } else {
             let data = assemble(pieces, total);
-            (inspect::inspect(&data, fallback), data, body_budget)
+            (inspect_body(&data, fallback), data, body_budget)
         };
         meta = inspected.map_err(|e| failure(400, e))?;
         body_budget = budget;

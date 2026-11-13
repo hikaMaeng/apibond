@@ -10,6 +10,7 @@ pub enum Api {
     Openai,
     Anthropic,
     Responses,
+    Embeddings,
 }
 
 impl Api {

@@ -4,7 +4,7 @@
 [![Release](https://img.shields.io/github/v/release/hikaMaeng/apibond)](https://github.com/hikaMaeng/apibond/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**OpenAI · Anthropic · Responses / 세션 고정 / Rust 스트리밍 중계**
+**OpenAI · Anthropic · Responses · Embeddings / 세션 고정 / Rust 스트리밍 중계**
 
 동일 모델을 제공하는 여러 백엔드를 하나의 API 엔드포인트로 묶습니다. 새 세션은 부하를 보고 배정하고, 후속 요청은 같은 서버로 보내 프리픽스 캐시를 재사용할 기회를 유지합니다. 추론 트래픽은 Rust가 처리하며, npm은 설치와 실행을 돕습니다.
 
@@ -139,6 +139,7 @@ flowchart LR
 | `openai` | OpenAI Chat Completions |
 | `anthropic` | Anthropic Messages |
 | `responses` | OpenAI Responses |
+| `embeddings` | OpenAI Embeddings (unreleased source) |
 
 백엔드마다 지원 목록을 다르게 설정할 수 있습니다. 예를 들어 `anthropic`이 있는 서버만 Messages 요청을 받습니다.
 
@@ -241,6 +242,14 @@ curl -N -i http://127.0.0.1:18180/v1/chat/completions \
 해당 API를 지원하는 백엔드를 `apis`에 먼저 지정해야 합니다. **Anthropic 클라이언트의 Base URL에는 `/v1`을 붙이지 않습니다.**
 
 Claude Code가 부모 세션 ID와 에이전트 ID를 보내면 각 에이전트의 대화를 따로 고정합니다. 자세한 헤더 우선순위는 [API 문서](docs/api.md)에 있습니다.
+
+## 단일 노드 임베딩
+
+**현재 소스 빌드에서 지원하며, 공개 v0.1.1 바이너리에는 아직 포함되지 않았습니다.**
+
+`POST /v1/embeddings`는 단일 문자열과 문자열 배열 배치를 지원합니다. `apis: ["embeddings"]`로 실제 임베딩 서버를 지정하고, 기존과 같이 공개 모델 이름을 실제 모델 ID에 연결합니다. 배치 전체가 요청 슬롯 하나를 쓰며, 여러 요청으로 나누거나 벡터를 변환하지 않습니다.
+
+[단일 노드 설정 예제](examples/embeddings-lmstudio.json)는 `192.168.0.6:12345`의 `embeddinggemma2:mp`를 `http://127.0.0.1:18182/v1`의 공개 모델 `embeddinggemma2`로 제공합니다. 소스 빌드·실행 명령과 단건/배치 요청 예제는 [임베딩 사용법](docs/usage.md#single-node-embeddings-unreleased-source)에 있습니다. 실제 입력 형식과 응답 인코딩 지원은 백엔드에 따릅니다.
 
 ## LM Studio 연결
 

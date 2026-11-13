@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "listen": "127.0.0.1:18182",
+  "inbound_auth": { "mode": "none" },
+  "backends": {
+    "embedding-node": {
+      "base_url": "http://192.168.0.6:12345/v1",
+      "apis": ["embeddings"],
+      "auth": { "scheme": "none" }
+    }
+  },
+  "models": {
+    "embeddinggemma2": {
+      "backends": [
+        { "backend": "embedding-node", "model": "embeddinggemma2:mp" }
+      ]
+    }
+  }
+}

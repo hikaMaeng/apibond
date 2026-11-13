@@ -63,11 +63,23 @@ pub struct Metadata {
 }
 
 pub fn inspect(body: &Bytes, user_fallback: bool) -> Result<Metadata> {
+    inspect_body(body, user_fallback, true)
+}
+
+pub fn inspect_embeddings(body: &Bytes, user_fallback: bool) -> Result<Metadata> {
+    inspect_body(body, user_fallback, false)
+}
+
+fn inspect_body(body: &Bytes, user_fallback: bool, native_state: bool) -> Result<Metadata> {
     let root: Fields<'_> =
         serde_json::from_slice(body).map_err(|e| format!("invalid JSON: {e}"))?;
     let mut meta = Metadata {
         model: root.string("model")?,
-        previous: root.string("previous_response_id")?,
+        previous: if native_state {
+            root.string("previous_response_id")?
+        } else {
+            None
+        },
         ..Default::default()
     };
     if let Some(raw) = root.get("model") {
@@ -85,24 +97,26 @@ pub fn inspect(body: &Bytes, user_fallback: bool) -> Result<Metadata> {
     if meta.session.is_none() && user_fallback {
         meta.session = root.string("user")?;
     }
-    for key in ["conversation", "container", "skills"] {
-        if root.get(key).is_some_and(|v| v.get() != "null") {
-            meta.untracked_state = true;
+    if native_state {
+        for key in ["conversation", "container", "skills"] {
+            if root.get(key).is_some_and(|v| v.get() != "null") {
+                meta.untracked_state = true;
+            }
         }
-    }
-    if let Some(v) = root.get("prompt").filter(|v| v.get().starts_with('{')) {
-        let f: Fields<'_> = serde_json::from_str(v.get()).map_err(|e| e.to_string())?;
-        if f.get("id").is_some() {
-            meta.untracked_state = true;
+        if let Some(v) = root.get("prompt").filter(|v| v.get().starts_with('{')) {
+            let f: Fields<'_> = serde_json::from_str(v.get()).map_err(|e| e.to_string())?;
+            if f.get("id").is_some() {
+                meta.untracked_state = true;
+            }
         }
-    }
-    for key in ["input", "messages"] {
-        if let Some(v) = root.get(key) {
-            walk_content(v, 0, &mut meta)?;
+        for key in ["input", "messages"] {
+            if let Some(v) = root.get(key) {
+                walk_content(v, 0, &mut meta)?;
+            }
         }
-    }
-    if let Some(v) = root.get("tools").filter(|v| v.get() != "null") {
-        walk_tools(v, &mut meta)?;
+        if let Some(v) = root.get("tools").filter(|v| v.get() != "null") {
+            walk_tools(v, &mut meta)?;
+        }
     }
     for id in meta
         .model

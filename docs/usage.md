@@ -81,3 +81,31 @@ Optional backend health_path is origin-relative, e.g. `/health`; until its first
 `runtime.worker_threads` controls native Tokio workers. null defaults to min(logical cores, 8), avoiding unnecessary workers on large hosts; choose 1..512 explicitly for your load. Requests >=1 MiB are inspected on the bounded-admission blocking pool so large multimodal JSON does not monopolize streaming workers.
 
 Source build: `cargo build --release --locked`, then run target/release/apibond[.exe]. An npm Git URL is also supported: `npm install -g github:hikaMaeng/apibond#v0.1.1`. Release tgz embeds binary hashes; Git installs retrieve hashes from the same hosted release. Hash checks detect corruption, not an independently signed release identity. If scripts are disabled, first CLI use performs the same install; a read-only global prefix falls back to the user's cache.
+
+## Single-node embeddings (unreleased source)
+
+Build the current source before using this route. The published v0.1.1 npm/native binaries do not support `/v1/embeddings` or `apis: ["embeddings"]`.
+
+[examples/embeddings-lmstudio.json](../examples/embeddings-lmstudio.json) maps public model `embeddinggemma2` to the single upstream `embeddinggemma2:mp` at `http://192.168.0.6:12345/v1`. The example listens on loopback port 18182 separately from the Chat service. Replace the upstream address/model with the actual embedding deployment; do not assign embedding capability to a chat-only model.
+
+```sh
+cargo build --release --locked
+./target/release/apibond --config examples/embeddings-lmstudio.json --check
+./target/release/apibond --config examples/embeddings-lmstudio.json
+```
+
+On Windows use `.\target\release\apibond.exe` in the last two commands. Save one of these UTF-8 bodies as `embedding-request.json`:
+
+```json
+{"model":"embeddinggemma2","input":"타입스크립트의 특징을 설명하라","encoding_format":"float"}
+```
+
+```json
+{"model":"embeddinggemma2","input":["타입스크립트의 특징을 설명하라","러스트의 특징을 설명하라","파이썬의 특징을 설명하라"],"encoding_format":"float"}
+```
+
+```powershell
+curl.exe http://127.0.0.1:18182/v1/embeddings -H "Content-Type: application/json" --data-binary "@embedding-request.json"
+```
+
+On macOS/Linux use `curl` instead of `curl.exe`. Expect one `data` entry per input and use each entry's `index` to associate it with its input; the vector dimension depends on the model. The complete array is forwarded once, and response vectors/usage are not rewritten. `dimensions`, `encoding_format`, token inputs and model-specific options depend on the upstream's actual support; see [constraints](constraints.md#embeddings-unreleased-source).

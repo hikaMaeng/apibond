@@ -2,6 +2,14 @@
 
 Changes marked **unreleased source** are not included in published v0.1.1 binaries or the existing `deploy/v0.1.1` artifacts.
 
+## Embeddings (unreleased source)
+
+`POST /v1/embeddings` requires an `embeddings` backend capability. It preserves native single/batch text and token-array inputs, all options and response bytes; batches remain one upstream request. Input is not interpreted as Responses content or file handles. The backend controls input limits, token-array support, dimensions and float/base64 behavior. The proxy does not tokenize, change vector encoding or compensate for unsupported/ignored options. The single-node LM Studio profile is in [examples/embeddings-lmstudio.json](../examples/embeddings-lmstudio.json).
+
+A batch consumes one HTTP request/admission slot regardless of its input count; it is not split into concurrent upstream requests. If an embedding alias later has multiple backends, they must use compatible model weights, preprocessing/pooling and output dimensions so their vectors occupy the same vector space. This configuration requirement is not automatically verified; initial acceptance covers one node only.
+
+The `embeddinggemma2:mp` backend used for the initial single-node check accepts strings and string arrays. Its token-array requests return 400, and its `encoding_format: "base64"` response remains a float array; those are upstream behaviors, not proxy conversions. Protocol-shape preservation in fixtures is distinct from this model's supported input/encoding combinations.
+
 ## State selection
 
 Sessions are scoped to inbound credential and public model pool. Native handle lookup is scoped to credential/provider/ID; its owner must belong to the selected model pool. When inbound auth is explicitly none, callers share one scope. IDs colliding across backends are treated as unknown and require a pin.
